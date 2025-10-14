@@ -12,3 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btn) btn.addEventListener('click', calcPoints);
   calcPoints();
 });
+document.querySelectorAll('nav[aria-label="Main"] a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', link.getAttribute('href'));
+    }
+  });
+});

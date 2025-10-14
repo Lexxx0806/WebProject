@@ -7,6 +7,7 @@
   --accent-2: #a78bfa;
   --ok: #34d399;
   --warn: #f59e0b;
+  --nav-h: 100px;
 }
 * { box-sizing: border-box }
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; line-height: 1.55 }
@@ -58,3 +59,24 @@ label { font-size: 14px; color: var(--muted) }
 }
 .fine { font-size: 12px; color: var(--muted) }
 .pill { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); font-size: 12px }
+
+.card {
+  background-color: #0f1220  ;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+[id] {
+  scroll-margin-top: var(--nav-h);
+}
