@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Waste — The Pollution You Can’t See</title>
+  <meta name="description" content="A show-and-tell site explaining digital waste, why it matters, and simple habits to reduce it."/>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <nav aria-label="Main">
+      <a href="#what">What is Digital Waste?</a>
+      <a href="#why">Why it Matters</a>
+      <a href="#calculator">Impact Estimator</a>
+      <a href="#actions">Actions</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Digital Waste <span class="pill" title="Project Type">Show & Tell</span></h1>
+        <p>The photos you never delete, the streams you leave running, the emails you never open — they all live on servers that use energy.</p>
+        <div class="grid">
+          <div class="kpi"><strong>Declutter Wins</strong> <span class="badge">challenge</span></div>
+          <div class="kpi"><strong>Local Actions</strong> <span class="badge">habits</span></div>
+          <div class="kpi"><strong>Learn & Share</strong> <span class="badge">awareness</span></div>
+        </div>
+        <p class="fine">This site uses illustrative “impact points” to spark discussion (not scientific carbon accounting).</p>
+      </div>
+      <div class="card">
+        <h3 id="what">What is “Digital Waste”?</h3>
+        <p class="muted">Unused files, duplicate backups, endless streaming, and inbox overload that keep data centers busy.</p>
+        <ul>
+          <li>Old screenshots, videos, and zip files you never open</li>
+          <li>Auto-backups kept forever</li>
+          <li>Streaming on mute or background tabs</li>
+          <li>Unread newsletters piling up</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid card" id="why" aria-labelledby="why-title">
+      <div>
+        <h2 id="why-title">Why it Matters</h2>
+        <p>Data centers use electricity and water to cool machines. Less unnecessary data means lighter demand.</p>
+        <ul>
+          <li>Fewer duplicates → fewer storage demands</li>
+          <li>Smarter streaming → lower network load</li>
+          <li>Inbox hygiene → less processing overhead</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Targets & SDG Links</h2>
+        <ul>
+          <li><strong>SDG 12</strong>: Responsible Consumption & Production</li>
+          <li><strong>SDG 13</strong>: Climate Action (awareness, behavior change)</li>
+          <li><strong>SDG 9</strong>: Efficient Infrastructure (stretch goal)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="calculator" aria-labelledby="calc-title">
+      <h2 id="calc-title">Impact Estimator</h2>
+      <p class="muted">Estimate “impact points” from your habits. This is a teaching tool, not an emissions calculator.</p>
+      <div class="row">
+        <div>
+          <label for="gb">Stored data (GB) including photos/backups</label>
+          <input id="gb" type="number" min="0" step="1" value="50" />
+        </div>
+        <div>
+          <label for="stream">Streaming hours per week</label>
+          <input id="stream" type="number" min="0" step="0.5" value="10" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="email">Unread newsletters per week</label>
+          <input id="email" type="number" min="0" step="1" value="20" />
+        </div>
+        <div>
+          <label for="dup">Estimated duplicate files (%)</label>
+          <input id="dup" type="number" min="0" max="100" step="1" value="15" />
+        </div>
+      </div>
+      <p style="margin:12px 0"><button id="calc" class="btn" type="button">Calculate Impact</button></p>
+      <div id="score" class="kpi"><strong>Impact Points: <span id="points">—</span></strong><span class="badge">lower is better</span></div>
+      <p class="fine">Formula (illustrative): points = GB×2 + streaming×3 + newsletters×1 + (dup% of GB)×1.5</p>
+    </section>
+
+    <section class="card" id="actions" aria-labelledby="actions-title">
+      <h2 id="actions-title">Simple Actions</h2>
+      <div class="grid">
+        <div>
+          <h3>Weekly (5–10 min)</h3>
+          <ul>
+            <li>Delete duplicates & screenshots</li>
+            <li>Unsubscribe from low-value newsletters</li>
+            <li>Set “auto-delete trash” to 30 days</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Monthly (20–30 min)</h3>
+          <ul>
+            <li>Archive old chats and prune backups</li>
+            <li>Export & compress large videos</li>
+            <li>Review cloud folders for clutter</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Smart Streaming</h3>
+          <ul>
+            <li>Disable autoplay when idle</li>
+            <li>Use audio-only for podcasts/music</li>
+            <li>Lower resolution when multitasking</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <details>
+        <summary>Is digital waste “real” waste?</summary>
+        <p>It’s not trash you can see, but the storage and network activity require energy and resources. Reducing needless data is a responsible habit.</p>
+      </details>
+      <details>
+        <summary>Are the points scientifically accurate?</summary>
+        <p>No. They’re for classroom discussion only. For research, look for peer-reviewed sources on data-center energy and network intensity.</p>
+      </details>
+      <details>
+        <summary>Does deleting email really help?</summary>
+        <p>The direct effect is small per person, but at scale, good data hygiene reduces unnecessary processing and storage growth.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>Made for Show &amp; Tell. Customize text, add local resources, and share your declutter wins.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

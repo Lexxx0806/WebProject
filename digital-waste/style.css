@@ -1,0 +1,60 @@
+:root {
+  --bg: #0f1220;
+  --card: #151934;
+  --text: #e9e9f1;
+  --muted: #b7b7c9;
+  --accent: #7dd3fc;
+  --accent-2: #a78bfa;
+  --ok: #34d399;
+  --warn: #f59e0b;
+}
+* { box-sizing: border-box }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; line-height: 1.55 }
+a { color: var(--accent) }
+header {
+  position: sticky; top: 0; backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(15,18,32,.8), rgba(15,18,32,.6) 60%, transparent);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  z-index: 10;
+}
+nav { max-width: 1100px; margin: 0 auto; display: flex; gap: 16px; align-items: center; padding: 10px 16px }
+nav a { text-decoration: none; padding: 8px 12px; border-radius: 999px; }
+nav a:hover { background: rgba(255,255,255,.06) }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 16px }
+.hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; padding: 48px 0 }
+.hero h1 { font-size: clamp(28px, 5vw, 48px); line-height: 1.1; margin: 0 0 12px }
+.hero p { color: var(--muted); margin: 0 0 16px }
+.card {
+  background: radial-gradient(1200px 400px at -10% -30%, rgba(125,211,252,.12), transparent),
+              radial-gradient(1200px 400px at 120% 130%, rgba(167,139,250,.12), transparent),
+              var(--card);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px; padding: 18px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) }
+h2 { margin-top: 40px }
+.kpi { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06) }
+.muted { color: var(--muted) }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: var(--muted) }
+.btn {
+  display: inline-block; padding: 10px 14px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: linear-gradient(180deg, rgba(125,211,252,.12), rgba(167,139,250,.12));
+  text-decoration: none; color: var(--text);
+}
+.btn:hover { transform: translateY(-1px) }
+footer { border-top: 1px solid rgba(255,255,255,.08); margin-top: 40px; padding: 24px 16px; color: var(--muted) }
+/* Simple form */
+input, select, button {
+  background: rgba(255,255,255,.06); color: var(--text); border: 1px solid rgba(255,255,255,.16);
+  padding: 10px 12px; border-radius: 10px; width: 100%;
+}
+label { font-size: 14px; color: var(--muted) }
+.row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr }
+  .row { grid-template-columns: 1fr }
+}
+.fine { font-size: 12px; color: var(--muted) }
+.pill { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); font-size: 12px }
