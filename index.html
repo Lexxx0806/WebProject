@@ -1,176 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Waste — The Pollution You Can’t See</title>
-  <meta name="description" content="A show-and-tell site explaining digital waste, why it matters, and simple habits to reduce it."/>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Waste — The Pollution You Can’t See</title>
+    <meta
+      name="description"
+      content="A show-and-tell site explaining digital waste, why it matters, and simple habits to reduce it."
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
-  <header>
-    <nav aria-label="Main">
-      <a href="#what">What is Digital Waste?</a>
-      <a href="#why">Why it Matters</a>
-      <a href="#calculator">Impact Estimator</a>
-      <a href="#actions">Actions</a>
-      <a href="#faq">FAQ</a>
-      <a href="/demo.html">DEMO</a>
-    </nav>
-  </header>
+  <body>
+    <header>
+      <nav aria-label="Main">
+        <a href="#what">What is Digital Waste?</a>
+        <a href="#why">Why it Matters</a>
+        <a href="#calculator">Impact Estimator</a>
+        <a href="#game">Mini-Game</a>
+        <a href="#actions">Actions</a>
+        <a href="#faq">FAQ</a>
+        <a href="/demo.html">DEMO</a>
+      </nav>
+    </header>
 
-  <main class="container">
-    <section class="hero">
-      <div>
-        <h1>Digital Waste <span class="pill" title="Project Type">Info</span></h1>
-        <p>The photos you never delete, the streams you leave running, the emails you never open — they all live on servers that use energy.</p>
-        <div class="grid">
-          <div class="kpi"><strong>Declutter Wins</strong> <span class="badge">challenge</span></div>
-          <div class="kpi"><strong>Local Actions</strong> <span class="badge">habits</span></div>
-          <div class="kpi"><strong>Learn & Share</strong> <span class="badge">awareness</span></div>
-        </div>
-        <p class="fine">This site uses illustrative “impact points” to spark discussion (not scientific carbon accounting).</p>
-      </div>
-      <div class="card">
-        <h3 id="what">What is “Digital Waste”?</h3>
-        <p class="muted">Unused files, duplicate backups, endless streaming, and inbox overload that keep data centers busy.</p>
-        <ul>
-          <li>Old screenshots, videos, and zip files you never open</li>
-          <li>Auto-backups kept forever</li>
-          <li>Streaming on mute or background tabs</li>
-          <li>Unread newsletters piling up</li>
-        </ul>
-      </div>
-    </section>
-
-    <br>
-
-    <section class="grid card" id="why" aria-labelledby="why-title">
-      <div>
-        <h2 id="why-title">Why it Matters</h2>
-        <p>Data centers use electricity and water to cool machines. Less unnecessary data means lighter demand.</p>
-        <ul>
-          <li>Fewer duplicates → fewer storage demands</li>
-          <li>Smarter streaming → lower network load</li>
-          <li>Inbox hygiene → less processing overhead</li>
-        </ul>
-      </div>
-      <div>
-        <h2>Targets & SDG Links</h2>
-        <ul>
-          <li><strong>SDG 12</strong>: Responsible Consumption & Production</li>
-          <li><strong>SDG 13</strong>: Climate Action (awareness, behavior change)</li>
-          <li><strong>SDG 9</strong>: Efficient Infrastructure (stretch goal)</li>
-        </ul>
-      </div>
-    </section>
-
-    <br>
-
-    <section class="card" id="calculator" aria-labelledby="calc-title">
-      <h2 id="calc-title">Impact Estimator</h2>
-      <p class="muted">Estimate “impact points” from your habits. This is a teaching tool, not an emissions calculator.</p>
-      <div class="row">
+    <main class="container">
+      <section class="hero">
         <div>
-          <label for="gb">Stored data (GB) including photos/backups</label>
-          <input id="gb" type="number" min="0" step="1" value="50" />
-        </div>
-        <div>
-          <label for="stream">Streaming hours per week</label>
-          <input id="stream" type="number" min="0" step="0.5" value="10" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="email">Unread newsletters per week</label>
-          <input id="email" type="number" min="0" step="1" value="20" />
-        </div>
-        <div>
-          <label for="dup">Estimated duplicate files (%)</label>
-          <input id="dup" type="number" min="0" max="100" step="1" value="15" />
-        </div>
-      </div>
-      <p style="margin:12px 0"><button id="calc" class="btn" type="button">Calculate Impact</button></p>
-      <div id="score" class="kpi"><strong>Impact Points: <span id="points">—</span></strong><span class="badge">lower is better</span></div>
-      <p class="fine">Formula (illustrative): points = GB×2 + streaming×3 + newsletters×1 + (dup% of GB)×1.5</p>
-    </section>
+          <h1>
+            Digital Waste <span class="pill" title="Project Type">Info</span>
+          </h1>
+          <p>
+            The photos you never delete, the streams you leave running, the
+            emails you never open — they all live on servers that use energy.
+          </p>
 
-    <br>
+          <div class="grid">
+            <div class="kpi">
+              <span
+                ><i class="fa-solid fa-trophy highlight"></i> Declutter
+                Wins</span
+              >
+              <span class="badge">challenge</span>
+            </div>
+            <div class="kpi">
+              <span
+                ><i class="fa-solid fa-leaf highlight"></i> Local Actions</span
+              >
+              <span class="badge">habits</span>
+            </div>
+            <div class="kpi">
+              <span
+                ><i class="fa-solid fa-bullhorn highlight"></i> Learn &
+                Share</span
+              >
+              <span class="badge">awareness</span>
+            </div>
+          </div>
 
-    <section class="card" id="actions" aria-labelledby="actions-title">
-      <h2 id="actions-title">Simple Actions</h2>
-      <div class="grid">
-        <div>
-          <h3>Weekly (5–10 min)</h3>
+          <p class="fine" style="margin-top: 20px">
+            This site uses illustrative “impact points” to spark discussion (not
+            scientific carbon accounting).
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 id="what">
+            <i class="fa-solid fa-server"></i> What is “Digital Waste”?
+          </h3>
+          <p>
+            Unused files, duplicate backups, endless streaming, and inbox
+            overload that keep data centers busy.
+          </p>
           <ul>
-            <li>Delete duplicates & screenshots</li>
-            <li>Unsubscribe from low-value newsletters</li>
-            <li>Set “auto-delete trash” to 30 days</li>
+            <li>Old screenshots, videos, and zip files you never open</li>
+            <li>Auto-backups kept forever</li>
+            <li>Streaming on mute or background tabs</li>
+            <li>Unread newsletters piling up</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="grid card" id="why" aria-labelledby="why-title">
+        <div>
+          <h2 id="why-title">
+            <i class="fa-solid fa-bolt"></i> Why it Matters
+          </h2>
+          <p>
+            Data centers use electricity and water to cool machines. Less
+            unnecessary data means lighter demand.
+          </p>
+          <ul>
+            <li>Fewer duplicates → fewer storage demands</li>
+            <li>Smarter streaming → lower network load</li>
+            <li>Inbox hygiene → less processing overhead</li>
           </ul>
         </div>
         <div>
-          <h3>Monthly (20–30 min)</h3>
+          <h2>Targets & SDG Links</h2>
           <ul>
-            <li>Archive old chats and prune backups</li>
-            <li>Export & compress large videos</li>
-            <li>Review cloud folders for clutter</li>
+            <li>
+              <strong>SDG 12</strong>: Responsible Consumption & Production
+            </li>
+            <li>
+              <strong>SDG 13</strong>: Climate Action (awareness, behavior
+              change)
+            </li>
+            <li>
+              <strong>SDG 9</strong>: Efficient Infrastructure (stretch goal)
+            </li>
           </ul>
         </div>
-        <div>
-          <h3>Smart Streaming</h3>
-          <ul>
-            <li>Disable autoplay when idle</li>
-            <li>Use audio-only for podcasts/music</li>
-            <li>Lower resolution when multitasking</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <br>
-
-    <section class="card" id="faq" aria-labelledby="faq-title">
-      <h2 id="faq-title">FAQ</h2>
-      <details>
-        <summary>What is Digital Waste</summary>
-        <p>Unnecessary data like duplicate photos, old emails, and unused files that stay stored on servers — consuming energy and producing avoidable carbon emissions.</p>
-      </details>
-      <details>
-        <summary>Are the points scientifically accurate?</summary>
-        <p>Yes. Research confirms that data centers and networks use electricity continuously, and reducing unused data directly cuts emissions.
+      <section class="card" id="calculator" aria-labelledby="calc-title">
+        <h2 id="calc-title">
+          <i class="fa-solid fa-calculator"></i> Impact Estimator
+        </h2>
+        <p>
+          Estimate “impact points” from your habits. This is a teaching tool,
+          not an emissions calculator.
         </p>
-      </details>
-      <details>
-        <summary>Does deleting email really help?</summary>
-        <p>The direct effect is small per person, but at scale, good data hygiene reduces unnecessary processing and storage growth.</p>
-      </details>
-      <details>
-        <summary>Are digital waste “real” waste?</summary>
-        <p>It’s not trash you can see, but the storage and network activity require energy and resources. Reducing needless data is a responsible habit.</p>
-      </details>
-      <details>
-        <summary>How can I lower my digital footprint?</summary>
-        <p>Delete old files, emails, and duplicates, stream responsibly, and choose cloud providers powered by renewable energy. Simple as that</p>
-      </details>
-    </section>
-  </main>
 
-  <footer class="container">
-    <p>findings are supported by peer-reviewed research and expert reports, including studies published by the IEA
-      iea.org 
-      , Carbon Trust
-      carbontrust.com
-      , and academic analyses summarized in outlets like Stanford Magazine
-      stanfordmag.org
-      . Industry and institutional reports (e.g., from the IET
-      theiet.org
-      theiet.org
-      and Oeko-Institut) and articles in The Conversation
-      lboro.ac.uk
-      have quantified the carbon cost of unused “dark data” and everyday digital habits. These sources, as cited in context above, provide a credible, data-backed picture of how our digital life – if unmanaged – can quietly contribute to our carbon footprint, and what we can do about it.</p>
-  </footer>
+        <div class="row">
+          <div>
+            <label for="gb">Stored data (GB) including photos/backups</label>
+            <input id="gb" type="number" min="0" step="1" value="50" />
+          </div>
+          <div>
+            <label for="stream">Streaming hours per week</label>
+            <input id="stream" type="number" min="0" step="0.5" value="10" />
+          </div>
+        </div>
 
-  <script src="script.js"></script>
-</body>
+        <div class="row">
+          <div>
+            <label for="email">Unread newsletters per week</label>
+            <input id="email" type="number" min="0" step="1" value="20" />
+          </div>
+          <div>
+            <label for="dup">Estimated duplicate files (%)</label>
+            <input
+              id="dup"
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              value="15"
+            />
+          </div>
+        </div>
+
+        <p style="margin: 20px 0">
+          <button id="calc" class="btn" type="button">Calculate Impact</button>
+        </p>
+
+        <div id="result-box" class="kpi">
+          <strong>Impact Points: <span id="points">—</span></strong>
+          <span id="feedback-msg" class="badge">Click Calculate</span>
+        </div>
+
+        <div class="row" style="margin-top: 15px">
+          <button id="share-btn" class="btn btn-outline" type="button">
+            <i class="fa-solid fa-share-nodes"></i> Share Score
+          </button>
+          <button id="reset-btn" class="btn btn-secondary" type="button">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+        </div>
+
+        <div id="visualizer" class="visualizer-container">
+          <h3>Your monthly footprint is roughly equal to:</h3>
+          <div
+            class="grid"
+            style="grid-template-columns: repeat(2, 1fr); gap: 15px"
+          >
+            <div class="stat-card">
+              <i class="fa-solid fa-car icon-warn"></i>
+              <div class="label">Driving a gas car for</div>
+              <div class="number"><span id="car-miles">0</span> km</div>
+            </div>
+            <div class="stat-card">
+              <i class="fa-solid fa-mobile-screen-button icon-safe"></i>
+              <div class="label">Charging a phone</div>
+              <div class="number"><span id="phone-charges">0</span> times</div>
+            </div>
+          </div>
+          <p class="fine" style="margin-top: 15px; text-align: center">
+            *Illustrative estimates based on average data center energy
+            intensity.
+          </p>
+        </div>
+
+        <p class="fine" style="margin-top: 20px">
+          Formula (illustrative): points = GB×2 + streaming×3 + newsletters×1 +
+          (dup% of GB)×1.5
+        </p>
+      </section>
+
+      <section class="card" id="game" aria-labelledby="game-title">
+        <h2 id="game-title">
+          <i class="fa-solid fa-gamepad"></i> Mini-Game: Server Saver
+        </h2>
+        <p>
+          Tap the falling files to delete them before they overload the server!
+        </p>
+
+        <div id="game-board">
+          <div id="game-overlay">
+            <h3 id="game-msg">Ready?</h3>
+            <button
+              id="start-game-btn"
+              class="btn"
+              style="width: auto; padding: 10px 30px"
+            >
+              Start Game
+            </button>
+          </div>
+
+          <div class="game-hud-left">Score: <span id="game-score">0</span></div>
+          <div class="game-hud-right">
+            Lives: <span id="game-lives">5</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="actions" aria-labelledby="actions-title">
+        <h2 id="actions-title">
+          <i class="fa-solid fa-check-double"></i> Simple Actions
+        </h2>
+        <div class="grid">
+          <div>
+            <h3>
+              <i class="fa-solid fa-trash-arrow-up highlight"></i> Weekly (5–10
+              min)
+            </h3>
+            <ul>
+              <li>Delete duplicates & screenshots</li>
+              <li>Unsubscribe from low-value newsletters</li>
+              <li>Set “auto-delete trash” to 30 days</li>
+            </ul>
+          </div>
+          <div>
+            <h3>
+              <i class="fa-solid fa-box-archive highlight"></i> Monthly (20–30
+              min)
+            </h3>
+            <ul>
+              <li>Archive old chats and prune backups</li>
+              <li>Export & compress large videos</li>
+              <li>Review cloud folders for clutter</li>
+            </ul>
+          </div>
+          <div>
+            <h3><i class="fa-solid fa-play highlight"></i> Smart Streaming</h3>
+            <ul>
+              <li>Disable autoplay when idle</li>
+              <li>Use audio-only for podcasts/music</li>
+              <li>Lower resolution when multitasking</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">
+          <i class="fa-regular fa-circle-question"></i> FAQ
+        </h2>
+        <details>
+          <summary>What is Digital Waste?</summary>
+          <p>
+            Unnecessary data like duplicate photos, old emails, and unused files
+            that stay stored on servers — consuming energy and producing
+            avoidable carbon emissions.
+          </p>
+        </details>
+        <details>
+          <summary>Are the points scientifically accurate?</summary>
+          <p>
+            Yes. Research confirms that data centers and networks use
+            electricity continuously, and reducing unused data directly cuts
+            emissions.
+          </p>
+        </details>
+        <details>
+          <summary>Does deleting email really help?</summary>
+          <p>
+            The direct effect is small per person, but at scale, good data
+            hygiene reduces unnecessary processing and storage growth.
+          </p>
+        </details>
+        <details>
+          <summary>Is digital waste “real” waste?</summary>
+          <p>
+            It’s not trash you can see, but the storage and network activity
+            require energy and resources. Reducing needless data is a
+            responsible habit.
+          </p>
+        </details>
+        <details>
+          <summary>How can I lower my digital footprint?</summary>
+          <p>
+            Delete old files, emails, and duplicates, stream responsibly, and
+            choose cloud providers powered by renewable energy. Simple as that.
+          </p>
+        </details>
+      </section>
+    </main>
+
+    <footer class="container">
+      <p>
+        findings are supported by peer-reviewed research and expert reports,
+        including studies published by the IEA, Carbon Trust, and academic
+        analyses summarized in outlets like Stanford Magazine. Industry and
+        institutional reports (e.g., from the IET and Oeko-Institut) and
+        articles in The Conversation have quantified the carbon cost of unused
+        “dark data” and everyday digital habits.
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
 </html>
