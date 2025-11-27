@@ -3,323 +3,398 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Digital Waste — The Pollution You Can’t See</title>
-    <meta
-      name="description"
-      content="A show-and-tell site explaining digital waste, why it matters, and simple habits to reduce it."
+    <title>Lite — Shed the Digital Weight</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <header>
-      <nav aria-label="Main">
-        <a href="#what">What is Digital Waste?</a>
-        <a href="#why">Why it Matters</a>
-        <a href="#calculator">Impact Estimator</a>
-        <a href="#game">Mini-Game</a>
-        <a href="#actions">Actions</a>
-        <a href="#faq">FAQ</a>
-        <a href="/demo.html">DEMO</a>
-      </nav>
-    </header>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="menu-wrapper">
+      <div class="menu-preview">
+        <div class="preview-header">
+          <span class="status-dot"></span> System Online
+        </div>
+        <ul class="preview-list">
+          <li>Start</li>
+          <li>Toolkit</li>
+          <li>Estimator</li>
+          <li>Simulation</li>
+        </ul>
+        <div class="preview-footer">Open Mission Control</div>
+      </div>
+      <button id="menu-toggle" class="menu-orb">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+
+    <div id="menu-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="menu-close" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="overlay-grid">
+          <div class="nav-links">
+            <h3>Navigation</h3>
+
+            <a href="#hero" class="menu-link close-menu-on-click">Start</a>
+
+            <div class="accordion-item">
+              <button class="menu-link accordion-trigger">
+                Toolkit
+                <i
+                  class="fa-solid fa-chevron-down"
+                  style="font-size: 1rem; margin-left: 15px; opacity: 0.5"
+                ></i>
+              </button>
+              <div class="sub-menu">
+                <a href="#card-storage" class="sub-link close-menu-on-click"
+                  >Storage Manager</a
+                >
+                <a href="#card-email" class="sub-link close-menu-on-click"
+                  >Inbox Detox</a
+                >
+                <a href="#card-pledge" class="sub-link close-menu-on-click"
+                  >Make Pledge</a
+                >
+              </div>
+            </div>
+
+            <a href="#calculator" class="menu-link close-menu-on-click"
+              >Estimator</a
+            >
+            <a href="#game" class="menu-link close-menu-on-click">Simulation</a>
+
+            <div class="accordion-item">
+              <button class="menu-link accordion-trigger">
+                Intelligence
+                <i
+                  class="fa-solid fa-chevron-down"
+                  style="font-size: 1rem; margin-left: 15px; opacity: 0.5"
+                ></i>
+              </button>
+              <div class="sub-menu">
+                <a href="#impact" class="sub-link close-menu-on-click"
+                  >Why Lite?</a
+                >
+                <a href="#faq" class="sub-link close-menu-on-click"
+                  >FAQ Database</a
+                >
+                <a href="report.html" class="sub-link highlight-sub"
+                  >Full Mission Report
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-section">
+            <h3>Mission Log</h3>
+            <div class="progress-card">
+              <h4>
+                <i class="fa-solid fa-code-branch accent"></i> Version 15.0
+              </h4>
+              <p style="font-size: 0.9rem">
+                Expanded Navigation with Accordion Menus and Deep-Dive Report.
+              </p>
+            </div>
+            <div class="progress-card">
+              <h4>
+                <i class="fa-solid fa-user-astronaut accent"></i> The Team
+              </h4>
+              <p style="font-size: 0.9rem">
+                Built by students at <strong>Yuan Ze University</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <main class="container">
-      <section class="hero">
-        <div>
-          <h1>
-            Digital Waste <span class="pill" title="Project Type">Info</span>
-          </h1>
-          <p>
-            The photos you never delete, the streams you leave running, the
-            emails you never open — they all live on servers that use energy.
+      <section id="hero" class="hero reveal active">
+        <div class="hero-content">
+          <h1>Lite.</h1>
+          <p class="hero-sub">
+            Shed the digital weight. The photos you never delete live on servers
+            that burn energy.
           </p>
-
-          <div class="grid">
-            <div class="kpi">
-              <span
-                ><i class="fa-solid fa-trophy highlight"></i> Declutter
-                Wins</span
-              >
-              <span class="badge">challenge</span>
+          <div class="stats-row">
+            <div class="stat-pill">
+              <i class="fa-solid fa-trophy accent"></i> Declutter Wins
             </div>
-            <div class="kpi">
-              <span
-                ><i class="fa-solid fa-leaf highlight"></i> Local Actions</span
-              >
-              <span class="badge">habits</span>
+            <div class="stat-pill">
+              <i class="fa-solid fa-leaf accent"></i> Real Impact
             </div>
-            <div class="kpi">
-              <span
-                ><i class="fa-solid fa-bullhorn highlight"></i> Learn &
-                Share</span
-              >
-              <span class="badge">awareness</span>
+            <div class="stat-pill">
+              <i class="fa-solid fa-bolt accent"></i> Save Energy
             </div>
           </div>
-
-          <p class="fine" style="margin-top: 20px">
-            This site uses illustrative “impact points” to spark discussion (not
-            scientific carbon accounting).
-          </p>
-        </div>
-
-        <div class="card">
-          <h3 id="what">
-            <i class="fa-solid fa-server"></i> What is “Digital Waste”?
-          </h3>
-          <p>
-            Unused files, duplicate backups, endless streaming, and inbox
-            overload that keep data centers busy.
-          </p>
-          <ul>
-            <li>Old screenshots, videos, and zip files you never open</li>
-            <li>Auto-backups kept forever</li>
-            <li>Streaming on mute or background tabs</li>
-            <li>Unread newsletters piling up</li>
-          </ul>
         </div>
       </section>
 
-      <section class="grid card" id="why" aria-labelledby="why-title">
-        <div>
-          <h2 id="why-title">
-            <i class="fa-solid fa-bolt"></i> Why it Matters
-          </h2>
-          <p>
-            Data centers use electricity and water to cool machines. Less
-            unnecessary data means lighter demand.
+      <section id="actions" class="reveal">
+        <div
+          class="header-group"
+          style="text-align: center; margin-bottom: 40px"
+        >
+          <h2>Digital Cleanup Toolkit</h2>
+          <p style="color: var(--text-muted); margin-bottom: 20px">
+            Complete these 3 missions.
           </p>
-          <ul>
-            <li>Fewer duplicates → fewer storage demands</li>
-            <li>Smarter streaming → lower network load</li>
-            <li>Inbox hygiene → less processing overhead</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Targets & SDG Links</h2>
-          <ul>
-            <li>
-              <strong>SDG 12</strong>: Responsible Consumption & Production
-            </li>
-            <li>
-              <strong>SDG 13</strong>: Climate Action (awareness, behavior
-              change)
-            </li>
-            <li>
-              <strong>SDG 9</strong>: Efficient Infrastructure (stretch goal)
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="card" id="calculator" aria-labelledby="calc-title">
-        <h2 id="calc-title">
-          <i class="fa-solid fa-calculator"></i> Impact Estimator
-        </h2>
-        <p>
-          Estimate “impact points” from your habits. This is a teaching tool,
-          not an emissions calculator.
-        </p>
-
-        <div class="row">
-          <div>
-            <label for="gb">Stored data (GB) including photos/backups</label>
-            <input id="gb" type="number" min="0" step="1" value="50" />
+          <div class="progress-track">
+            <div
+              id="progress-fill"
+              class="progress-fill"
+              style="width: 0%"
+            ></div>
           </div>
-          <div>
-            <label for="stream">Streaming hours per week</label>
-            <input id="stream" type="number" min="0" step="0.5" value="10" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="email">Unread newsletters per week</label>
-            <input id="email" type="number" min="0" step="1" value="20" />
-          </div>
-          <div>
-            <label for="dup">Estimated duplicate files (%)</label>
-            <input
-              id="dup"
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              value="15"
-            />
-          </div>
-        </div>
-
-        <p style="margin: 20px 0">
-          <button id="calc" class="btn" type="button">Calculate Impact</button>
-        </p>
-
-        <div id="result-box" class="kpi">
-          <strong>Impact Points: <span id="points">—</span></strong>
-          <span id="feedback-msg" class="badge">Click Calculate</span>
-        </div>
-
-        <div class="row" style="margin-top: 15px">
-          <button id="share-btn" class="btn btn-outline" type="button">
-            <i class="fa-solid fa-share-nodes"></i> Share Score
-          </button>
-          <button id="reset-btn" class="btn btn-secondary" type="button">
-            <i class="fa-solid fa-rotate-left"></i> Reset
-          </button>
-        </div>
-
-        <div id="visualizer" class="visualizer-container">
-          <h3>Your monthly footprint is roughly equal to:</h3>
-          <div
-            class="grid"
-            style="grid-template-columns: repeat(2, 1fr); gap: 15px"
+          <p
+            id="progress-text"
+            style="
+              font-size: 0.9rem;
+              margin-top: 10px;
+              font-weight: 600;
+              color: var(--accent);
+            "
           >
-            <div class="stat-card">
-              <i class="fa-solid fa-car icon-warn"></i>
-              <div class="label">Driving a gas car for</div>
-              <div class="number"><span id="car-miles">0</span> km</div>
-            </div>
-            <div class="stat-card">
-              <i class="fa-solid fa-mobile-screen-button icon-safe"></i>
-              <div class="label">Charging a phone</div>
-              <div class="number"><span id="phone-charges">0</span> times</div>
-            </div>
-          </div>
-          <p class="fine" style="margin-top: 15px; text-align: center">
-            *Illustrative estimates based on average data center energy
-            intensity.
+            0% Complete
           </p>
         </div>
-
-        <p class="fine" style="margin-top: 20px">
-          Formula (illustrative): points = GB×2 + streaming×3 + newsletters×1 +
-          (dup% of GB)×1.5
-        </p>
-      </section>
-
-      <section class="card" id="game" aria-labelledby="game-title">
-        <h2 id="game-title">
-          <i class="fa-solid fa-gamepad"></i> Mini-Game: Server Saver
-        </h2>
-        <p>
-          Tap the falling files to delete them before they overload the server!
-        </p>
-
-        <div id="game-board">
-          <div id="game-overlay">
-            <h3 id="game-msg">Ready?</h3>
+        <div class="grid">
+          <div
+            class="card small-card task-card"
+            id="card-storage"
+            style="border-top: 4px solid var(--accent)"
+          >
+            <div class="card-icon">
+              <i class="fa-solid fa-hard-drive icon-large"></i>
+            </div>
+            <h3>1. Storage Manager</h3>
+            <div class="btn-group">
+              <a
+                href="https://one.google.com/storage/management"
+                target="_blank"
+                class="btn btn-outline track-btn"
+                data-target="card-storage"
+                >Google One</a
+              >
+              <a
+                href="https://www.icloud.com/iclouddrive/"
+                target="_blank"
+                class="btn btn-outline track-btn"
+                data-target="card-storage"
+                >iCloud</a
+              >
+            </div>
+          </div>
+          <div
+            class="card small-card task-card"
+            id="card-email"
+            style="border-top: 4px solid var(--success)"
+          >
+            <div class="card-icon">
+              <i
+                class="fa-solid fa-envelope-open-text icon-large"
+                style="color: var(--success)"
+              ></i>
+            </div>
+            <h3>2. Inbox Detox</h3>
+            <div class="btn-group">
+              <a
+                href="https://mail.google.com/mail/u/0/#search/before%3A2023+category%3Apromotions"
+                target="_blank"
+                class="btn btn-outline track-btn"
+                data-target="card-email"
+                style="border-color: var(--success); color: var(--success)"
+                >Clean Gmail</a
+              >
+            </div>
+          </div>
+          <div
+            class="card small-card task-card"
+            id="card-pledge"
+            style="border-top: 4px solid #f472b6"
+          >
+            <div class="card-icon">
+              <i
+                class="fa-solid fa-hand-holding-heart icon-large"
+                style="color: #f472b6"
+              ></i>
+            </div>
+            <h3>3. Make the Pledge</h3>
             <button
-              id="start-game-btn"
-              class="btn"
-              style="width: auto; padding: 10px 30px"
+              id="pledge-btn"
+              class="btn btn-primary track-btn"
+              data-target="card-pledge"
+              style="margin-top: 15px; background: #f472b6; color: white"
             >
-              Start Game
+              I Pledge
             </button>
           </div>
+        </div>
+      </section>
 
-          <div class="game-hud-left">Score: <span id="game-score">0</span></div>
-          <div class="game-hud-right">
-            Lives: <span id="game-lives">5</span>
+      <section id="calculator" class="card reveal">
+        <div class="card-header">
+          <h2>Impact Estimator</h2>
+          <p>
+            See how your habits translate to <strong>real-world carbon</strong>.
+          </p>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Cloud Storage (GB)</label
+            ><input id="gb" type="number" value="50" />
+          </div>
+          <div class="input-group">
+            <label>Streaming (Hrs/Week)</label
+            ><input id="stream" type="number" value="10" />
+          </div>
+          <div class="input-group">
+            <label>Unread Emails (Weekly)</label
+            ><input id="email" type="number" value="20" />
+          </div>
+          <div class="input-group">
+            <label>Est. Duplicates (%)</label
+            ><input id="dup" type="number" value="15" />
+          </div>
+        </div>
+        <div class="action-row">
+          <button id="calc" class="btn btn-primary" type="button">
+            Calculate CO₂
+          </button>
+          <button id="reset-btn" class="btn btn-text" type="button">
+            Reset
+          </button>
+        </div>
+        <div id="visualizer" class="result-container">
+          <div class="score-circle">
+            <span id="points">—</span><small>kg CO₂/Year</small>
+          </div>
+          <div class="feedback-text">
+            <h3 id="feedback-msg">Calculate to see results</h3>
+            <p id="comparison-text">Enter your data above.</p>
+          </div>
+          <button id="share-btn" class="btn btn-outline">
+            <i class="fa-solid fa-share-nodes"></i> Share
+          </button>
+        </div>
+      </section>
+
+      <section id="game" class="card reveal">
+        <div class="card-header">
+          <h2>Mini-Game: Data Stream Defense</h2>
+          <p>Tap the falling "digital rot" before it overheats the server!</p>
+        </div>
+        <div id="game-board">
+          <div id="game-overlay">
+            <h3 id="game-msg">Ready to Defend?</h3>
+            <button id="start-game-btn" class="btn btn-primary">
+              Start Simulation
+            </button>
+          </div>
+          <div class="hud">
+            <span>Files Deleted: <b id="game-score">0</b></span>
+            <span
+              >Server Temp:
+              <b id="game-lives" style="color: var(--success)">40°C</b></span
+            >
           </div>
         </div>
       </section>
 
-      <section class="card" id="actions" aria-labelledby="actions-title">
-        <h2 id="actions-title">
-          <i class="fa-solid fa-check-double"></i> Simple Actions
-        </h2>
-        <div class="grid">
-          <div>
-            <h3>
-              <i class="fa-solid fa-trash-arrow-up highlight"></i> Weekly (5–10
-              min)
-            </h3>
-            <ul>
-              <li>Delete duplicates & screenshots</li>
-              <li>Unsubscribe from low-value newsletters</li>
-              <li>Set “auto-delete trash” to 30 days</li>
-            </ul>
-          </div>
-          <div>
-            <h3>
-              <i class="fa-solid fa-box-archive highlight"></i> Monthly (20–30
-              min)
-            </h3>
-            <ul>
-              <li>Archive old chats and prune backups</li>
-              <li>Export & compress large videos</li>
-              <li>Review cloud folders for clutter</li>
-            </ul>
-          </div>
-          <div>
-            <h3><i class="fa-solid fa-play highlight"></i> Smart Streaming</h3>
-            <ul>
-              <li>Disable autoplay when idle</li>
-              <li>Use audio-only for podcasts/music</li>
-              <li>Lower resolution when multitasking</li>
-            </ul>
-          </div>
+      <section id="impact" class="grid reveal">
+        <div class="card">
+          <h2><i class="fa-solid fa-server accent"></i> Why "Lite"?</h2>
+          <ul
+            style="
+              color: var(--text-muted);
+              padding-left: 20px;
+              line-height: 1.8;
+            "
+          >
+            <li><strong>Fewer duplicates</strong> → less storage hardware</li>
+            <li><strong>Smarter streaming</strong> → lower network energy</li>
+            <li><strong>Inbox hygiene</strong> → less processing overhead</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2><i class="fa-solid fa-globe accent"></i> Global Goals</h2>
+          <ul
+            style="
+              color: var(--text-muted);
+              padding-left: 20px;
+              line-height: 1.8;
+            "
+          >
+            <li><strong>SDG 12:</strong> Responsible Consumption</li>
+            <li><strong>SDG 13:</strong> Climate Action</li>
+            <li><strong>SDG 9:</strong> Efficient Infrastructure</li>
+          </ul>
         </div>
       </section>
 
-      <section class="card" id="faq" aria-labelledby="faq-title">
-        <h2 id="faq-title">
-          <i class="fa-regular fa-circle-question"></i> FAQ
-        </h2>
+      <section id="faq" class="reveal faq-section">
+        <h2>Frequency Asked Questions</h2>
         <details>
           <summary>What is Digital Waste?</summary>
           <p>
-            Unnecessary data like duplicate photos, old emails, and unused files
-            that stay stored on servers — consuming energy and producing
-            avoidable carbon emissions.
+            Unnecessary data like duplicate photos and old emails that stay
+            stored on servers — consuming energy.
           </p>
         </details>
         <details>
-          <summary>Are the points scientifically accurate?</summary>
+          <summary>Are these numbers accurate?</summary>
           <p>
-            Yes. Research confirms that data centers and networks use
-            electricity continuously, and reducing unused data directly cuts
-            emissions.
+            They are illustrative estimates based on average data center energy
+            intensity.
           </p>
         </details>
         <details>
           <summary>Does deleting email really help?</summary>
           <p>
-            The direct effect is small per person, but at scale, good data
-            hygiene reduces unnecessary processing and storage growth.
+            Individually, it's small. But collectively, it stops data centers
+            from needing to expand infrastructure unnecessarily.
           </p>
         </details>
         <details>
           <summary>Is digital waste “real” waste?</summary>
           <p>
-            It’s not trash you can see, but the storage and network activity
-            require energy and resources. Reducing needless data is a
-            responsible habit.
+            Yes. It’s not trash you can see, but the storage and network
+            activity require real electricity, water for cooling, and raw
+            materials for hardware.
           </p>
         </details>
         <details>
-          <summary>How can I lower my digital footprint?</summary>
+          <summary>How can I lower my footprint?</summary>
           <p>
-            Delete old files, emails, and duplicates, stream responsibly, and
-            choose cloud providers powered by renewable energy. Simple as that.
+            Delete old files, stream responsibly (don't autoplay while
+            sleeping), and choose cloud providers powered by renewable energy.
           </p>
         </details>
       </section>
     </main>
 
-    <footer class="container">
-      <p>
-        findings are supported by peer-reviewed research and expert reports,
-        including studies published by the IEA, Carbon Trust, and academic
-        analyses summarized in outlets like Stanford Magazine. Industry and
-        institutional reports (e.g., from the IET and Oeko-Institut) and
-        articles in The Conversation have quantified the carbon cost of unused
-        “dark data” and everyday digital habits.
+    <footer>
+      <p style="max-width: 800px; margin: 0 auto; line-height: 1.6">
+        Lite. Based on research by IEA & The Carbon Trust.
       </p>
     </footer>
 

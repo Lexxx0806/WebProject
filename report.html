@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lite — Mission Report</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Overrides for the text page */
+      .report-container {
+        max-width: 800px;
+        margin: 100px auto;
+        padding: 40px;
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+      h3 {
+        color: var(--accent);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        margin-top: 40px;
+      }
+      p,
+      li {
+        color: #ccc;
+        font-size: 1.1rem;
+        line-height: 1.8;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-bottom: 30px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .back-btn:hover {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="report-container reveal active">
+      <a href="index.html" class="back-btn">← Return to Mission Control</a>
+
+      <h1>Mission Report</h1>
+      <p class="lead">Technical analysis of the "Lite" initiative.</p>
+
+      <h3>1. The Problem</h3>
+      <p>
+        Digital activity is often perceived as carbon-neutral. However, the
+        infrastructure supporting the internet accounts for 3.7% of global
+        greenhouse emissions—comparable to the aviation industry. "Dark Data"
+        (unused files) creates a phantom load on this infrastructure.
+      </p>
+
+      <h3>2. The Methodology</h3>
+      <p>
+        Our calculations utilize the
+        <strong>Sustainable Web Design</strong> model:
+      </p>
+      <ul>
+        <li>
+          <strong>Storage:</strong> Average of 0.2kg CO2e per GB per year
+          (Source: Chia Network / IEA).
+        </li>
+        <li>
+          <strong>Streaming:</strong> 0.055kg CO2e per hour of HD video (Source:
+          Carbon Trust).
+        </li>
+        <li>
+          <strong>Email:</strong> 0.3g (spam) to 50g (attachment) per email
+          (Source: Berners-Lee).
+        </li>
+      </ul>
+
+      <h3>3. The Solution</h3>
+      <p>
+        Lite proposes a "Behavior-First" approach. By gamifying the deletion of
+        data, we aim to reduce server load at the source—the user.
+      </p>
+
+      <div style="margin-top: 50px; text-align: center">
+        <a href="index.html" class="btn btn-primary">Launch Tools</a>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

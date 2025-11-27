@@ -1,268 +1,296 @@
-/* =========================================
-   1. CALCULATOR LOGIC
-   ========================================= */
-function calcPoints() {
-  // Get Values (Prevent negative numbers)
-  const gb = Math.max(0, Number(document.getElementById("gb").value) || 0);
-  const stream = Math.max(
-    0,
-    Number(document.getElementById("stream").value) || 0
+document.addEventListener("DOMContentLoaded", () => {
+  /* 1. CUSTOM CURSOR */
+  const cursor = document.getElementById("cursor");
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+  document
+    .querySelectorAll("a, button, .menu-orb, summary, input")
+    .forEach((el) => {
+      el.addEventListener("mouseenter", () =>
+        document.body.classList.add("hovering")
+      );
+      el.addEventListener("mouseleave", () =>
+        document.body.classList.remove("hovering")
+      );
+    });
+
+  /* 2. SCROLL REVEAL */
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("active");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
   );
-  const email = Math.max(
-    0,
-    Number(document.getElementById("email").value) || 0
-  );
-  const dup = Math.max(
-    0,
-    Math.min(100, Number(document.getElementById("dup").value) || 0)
-  );
+  document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
-  // Calculate Formula
-  const dupGb = gb * (dup / 100);
-  const points = Math.round(gb * 2 + stream * 3 + email * 1 + dupGb * 1.5);
+  /* 3. MENU LOGIC + ACCORDION */
+  const menuToggle = document.getElementById("menu-toggle");
+  const menuClose = document.getElementById("menu-close");
+  const menuOverlay = document.getElementById("menu-overlay");
 
-  // Update Text
-  const pointsEl = document.getElementById("points");
-  const msgEl = document.getElementById("feedback-msg");
-  const resultBox = document.getElementById("result-box");
+  // Open/Close Overlay
+  if (menuToggle && menuOverlay) {
+    menuToggle.addEventListener("click", () => {
+      menuOverlay.classList.add("active");
+      menuToggle.style.opacity = "0";
+      menuToggle.style.pointerEvents = "none";
+    });
+    const closeMenu = () => {
+      menuOverlay.classList.remove("active");
+      menuToggle.style.opacity = "1";
+      menuToggle.style.pointerEvents = "auto";
+    };
+    if (menuClose) menuClose.addEventListener("click", closeMenu);
 
-  pointsEl.textContent = points.toString();
-
-  // Color & Message Logic
-  resultBox.classList.remove("score-low", "score-med", "score-high");
-  msgEl.classList.remove("score-low", "score-med", "score-high");
-
-  if (points < 100) {
-    resultBox.classList.add("score-low");
-    msgEl.textContent = "Eco Warrior! 🌿";
-    msgEl.style.color = "#34d399";
-  } else if (points < 300) {
-    resultBox.classList.add("score-med");
-    msgEl.textContent = "Average User 😐";
-    msgEl.style.color = "#fbbf24";
-  } else {
-    resultBox.classList.add("score-high");
-    msgEl.textContent = "Data Hoarder! 🚨";
-    msgEl.style.color = "#f87171";
+    // Close on specific link clicks
+    document.querySelectorAll(".close-menu-on-click").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
   }
 
-  // Save to Local Storage
-  localStorage.setItem("savedScore", points);
-
-  // Reveal Real World Visualizer
-  const visualizer = document.getElementById("visualizer");
-  if (visualizer) visualizer.style.display = "block";
-
-  // Math Conversions (Illustrative)
-  const carKm = (points * 0.15).toFixed(1);
-  const phones = Math.round(points * 60);
-
-  document.getElementById("car-miles").textContent = carKm;
-  document.getElementById("phone-charges").textContent =
-    phones.toLocaleString();
-}
-
-function loadSaved() {
-  const saved = localStorage.getItem("savedScore");
-  if (saved) {
-    document.getElementById("points").textContent = saved;
-    document.getElementById("feedback-msg").textContent = "Welcome Back";
-  }
-}
-
-/* =========================================
-   2. SOCIAL & RESET LOGIC
-   ========================================= */
-function shareScore() {
-  const score = document.getElementById("points").textContent;
-  if (score === "—") return alert("Please calculate your score first!");
-
-  const text = `I just checked my Digital Waste footprint! My score is ${score}. Check yours here:`;
-  const url = window.location.href;
-
-  if (navigator.share) {
-    navigator
-      .share({
-        title: "Digital Waste Calculator",
-        text: text,
-        url: url,
-      })
-      .catch(console.error);
-  } else {
-    navigator.clipboard.writeText(`${text} ${url}`);
-    const btn = document.getElementById("share-btn");
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-    setTimeout(() => (btn.innerHTML = originalHTML), 2000);
-  }
-}
-
-function resetCalculator() {
-  localStorage.removeItem("savedScore");
-
-  // Reset UI
-  document.getElementById("points").textContent = "—";
-  const msgEl = document.getElementById("feedback-msg");
-  msgEl.textContent = "Click Calculate";
-  msgEl.className = "badge";
-  msgEl.style.color = "";
-  document.getElementById("result-box").className = "kpi";
-
-  // Hide Visualizer
-  const visualizer = document.getElementById("visualizer");
-  if (visualizer) visualizer.style.display = "none";
-
-  // Reset Inputs
-  document.getElementById("gb").value = 50;
-  document.getElementById("stream").value = 10;
-  document.getElementById("email").value = 20;
-  document.getElementById("dup").value = 15;
-}
-
-/* =========================================
-   3. MINI-GAME LOGIC (SERVER SAVER)
-   ========================================= */
-const gameBoard = document.getElementById("game-board");
-const overlay = document.getElementById("game-overlay");
-const msgEl = document.getElementById("game-msg");
-const startBtn = document.getElementById("start-game-btn");
-const scoreEl = document.getElementById("game-score");
-const livesEl = document.getElementById("game-lives");
-
-let gameInterval;
-let score = 0;
-let lives = 5;
-let gameActive = false;
-const icons = [
-  "fa-file-image",
-  "fa-file-zipper",
-  "fa-envelope",
-  "fa-film",
-  "fa-trash-can",
-];
-
-function startGame() {
-  score = 0;
-  lives = 5;
-  gameActive = true;
-
-  scoreEl.textContent = score;
-  livesEl.textContent = lives;
-  overlay.style.display = "none";
-
-  // Clear old items
-  document.querySelectorAll(".falling-item").forEach((el) => el.remove());
-
-  gameLoop();
-}
-
-function gameLoop() {
-  if (!gameActive) return;
-  spawnItem();
-
-  // Spawn rate gets faster as score increases
-  let nextSpawn = Math.max(300, 1000 - score * 20);
-  gameInterval = setTimeout(gameLoop, nextSpawn);
-}
-
-function spawnItem() {
-  const item = document.createElement("i");
-  const iconClass = icons[Math.floor(Math.random() * icons.length)];
-  item.classList.add("fa-solid", iconClass, "falling-item");
-
-  // Random Position
-  item.style.left = Math.floor(Math.random() * 90) + "%";
-  item.style.top = "-30px";
-
-  // Click to delete
-  item.addEventListener("mousedown", () => {
-    if (!gameActive) return;
-    score++;
-    scoreEl.textContent = score;
-    item.classList.add("popped");
-    setTimeout(() => item.remove(), 200);
+  // Accordion Logic
+  document.querySelectorAll(".accordion-trigger").forEach((acc) => {
+    acc.addEventListener("click", (e) => {
+      e.stopPropagation();
+      acc.parentElement.classList.toggle("active");
+    });
   });
 
-  gameBoard.appendChild(item);
-
-  // Animation Logic
-  let pos = -30;
-  const speed = 2 + score / 15; // Speed increases with score
-
-  const fallInterval = setInterval(() => {
-    if (!gameActive) {
-      clearInterval(fallInterval);
-      return;
-    }
-
-    pos += speed;
-    item.style.top = pos + "px";
-
-    // Check collision (bottom of board)
-    if (pos > 360) {
-      clearInterval(fallInterval);
-      if (item.parentNode) {
-        item.remove();
-        loseLife();
-      }
-    }
-  }, 20);
-}
-
-function loseLife() {
-  lives--;
-  livesEl.textContent = lives;
-
-  // Red flash effect
-  gameBoard.style.borderColor = "#f87171";
-  setTimeout(
-    () => (gameBoard.style.borderColor = "rgba(255,255,255,0.1)"),
-    200
-  );
-
-  if (lives <= 0) endGame();
-}
-
-function endGame() {
-  gameActive = false;
-  clearTimeout(gameInterval);
-  msgEl.textContent = `Game Over! Score: ${score}`;
-  startBtn.textContent = "Play Again";
-  overlay.style.display = "flex";
-}
-
-/* =========================================
-   4. EVENT LISTENERS
-   ========================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  // Calculator Events
+  /* 4. CALCULATOR */
   const calcBtn = document.getElementById("calc");
-  if (calcBtn) calcBtn.addEventListener("click", calcPoints);
-
-  const shareBtn = document.getElementById("share-btn");
-  if (shareBtn) shareBtn.addEventListener("click", shareScore);
-
   const resetBtn = document.getElementById("reset-btn");
-  if (resetBtn) resetBtn.addEventListener("click", resetCalculator);
+  const shareBtn = document.getElementById("share-btn");
+  const resultContainer = document.getElementById("visualizer");
+  const pointsDisplay = document.getElementById("points");
+  const inputs = {
+    gb: document.getElementById("gb"),
+    stream: document.getElementById("stream"),
+    email: document.getElementById("email"),
+  };
 
-  // Game Events
-  if (startBtn) startBtn.addEventListener("click", startGame);
+  if (calcBtn) {
+    calcBtn.addEventListener("click", () => {
+      const gb = parseFloat(inputs.gb.value) || 0;
+      const stream = parseFloat(inputs.stream.value) || 0;
+      const email = parseFloat(inputs.email.value) || 0;
+      const totalCO2 = (
+        gb * 0.2 +
+        stream * 52 * 0.055 +
+        email * 52 * 0.004
+      ).toFixed(1);
+      const treesNeeded = Math.ceil(totalCO2 / 21);
+      pointsDisplay.textContent = totalCO2;
+      resultContainer.style.display = "flex";
 
-  // Load Memory
-  loadSaved();
-});
+      const circle = document.querySelector(".score-circle");
+      const msg = document.getElementById("feedback-msg");
+      if (totalCO2 < 50) {
+        msg.textContent = "Eco-Friendly 🌿";
+        circle.style.borderColor = "var(--success)";
+      } else if (totalCO2 < 150) {
+        msg.textContent = "Average Footprint ☁️";
+        circle.style.borderColor = "var(--accent)";
+      } else {
+        msg.textContent = "Heavy Emitter 🏭";
+        circle.style.borderColor = "var(--danger)";
+      }
 
-// Smooth Scroll for Nav Links
-document
-  .querySelectorAll('nav[aria-label="Main"] a[href^="#"]')
-  .forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const target = document.querySelector(link.getAttribute("href"));
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.pushState(null, "", link.getAttribute("href"));
+      document.getElementById(
+        "comparison-text"
+      ).innerHTML = `Your digital habits produce <strong>${totalCO2} kg</strong> of CO₂ per year.<br>You would need <strong>${treesNeeded} trees</strong> 🌳 to absorb this pollution.`;
+      resultContainer.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      resultContainer.style.display = "none";
+      inputs.gb.value = 50;
+      inputs.stream.value = 10;
+      inputs.email.value = 20;
+    });
+  }
+
+  /* 5. GAME */
+  const startBtn = document.getElementById("start-game-btn");
+  const gameBoard = document.getElementById("game-board");
+  const overlay = document.getElementById("game-overlay");
+  const gameMsg = document.getElementById("game-msg");
+  const scoreEl = document.getElementById("game-score");
+  const tempEl = document.getElementById("game-lives");
+  let gameInterval,
+    score = 0,
+    temperature = 40,
+    gameActive = false;
+  const icons = [
+    "fa-file-image",
+    "fa-film",
+    "fa-envelope",
+    "fa-triangle-exclamation",
+  ];
+
+  if (startBtn) {
+    startBtn.addEventListener("click", () => {
+      score = 0;
+      temperature = 40;
+      gameActive = true;
+      scoreEl.textContent = score;
+      updateTempUI();
+      overlay.style.display = "none";
+      document.querySelectorAll(".falling-item").forEach((e) => e.remove());
+      gameLoop();
+    });
+  }
+
+  function updateTempUI() {
+    tempEl.textContent = temperature + "°C";
+    if (temperature < 60) tempEl.style.color = "var(--success)";
+    else if (temperature < 80) tempEl.style.color = "var(--accent)";
+    else tempEl.style.color = "var(--danger)";
+  }
+
+  function gameLoop() {
+    if (!gameActive) return;
+    spawnItem();
+    gameInterval = setTimeout(gameLoop, Math.max(400, 1000 - score * 30));
+  }
+
+  function spawnItem() {
+    const item = document.createElement("i");
+    const icon = icons[Math.floor(Math.random() * icons.length)];
+    item.classList.add("fa-solid", icon, "falling-item");
+    item.style.left = 5 + Math.random() * 85 + "%";
+    item.style.top = "-30px";
+    gameBoard.appendChild(item);
+    let pos = -30;
+    const fallSpeed = 2 + score * 0.1;
+    const fallTimer = setInterval(() => {
+      if (!gameActive) {
+        clearInterval(fallTimer);
+        return;
+      }
+      pos += fallSpeed;
+      item.style.top = pos + "px";
+      if (pos > 360) {
+        clearInterval(fallTimer);
+        if (item.parentNode) item.remove();
+        temperature += 10;
+        updateTempUI();
+        gameBoard.style.borderColor = "var(--danger)";
+        setTimeout(
+          () => (gameBoard.style.borderColor = "rgba(255,255,255,0.05)"),
+          200
+        );
+        if (temperature >= 90) endGame();
+      }
+    }, 20);
+    item.addEventListener("mousedown", () => {
+      if (!gameActive) return;
+      clearInterval(fallTimer);
+      item.classList.add("popped");
+      score++;
+      scoreEl.textContent = score;
+      setTimeout(() => {
+        if (item.parentNode) item.remove();
+      }, 200);
+    });
+  }
+
+  function endGame() {
+    gameActive = false;
+    clearTimeout(gameInterval);
+    gameMsg.innerHTML = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;color:#fff;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
+    startBtn.textContent = "Cooldown & Retry";
+    overlay.style.display = "flex";
+  }
+
+  /* 6. CHECKLIST */
+  const trackBtns = document.querySelectorAll(".track-btn");
+  const progressBar = document.getElementById("progress-fill");
+  const progressText = document.getElementById("progress-text");
+  let completedTasks = new Set();
+  trackBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-target");
+      const card = document.getElementById(targetId);
+      if (!completedTasks.has(targetId)) {
+        completedTasks.add(targetId);
+        card.classList.add("completed");
+        const percentage = (completedTasks.size / 3) * 100;
+        progressBar.style.width = percentage + "%";
+        progressText.textContent = Math.round(percentage) + "% Complete";
+        if (completedTasks.size === 3) {
+          progressText.textContent = "100% - Clean! 🚀";
+          progressText.style.color = "var(--success)";
+          confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
+        }
       }
     });
   });
-  
+
+  /* 7. 3D EARTH (WARP SPEED) */
+  init3DEarth();
+  function init3DEarth() {
+    const canvas = document.querySelector("#bg-canvas");
+    if (!canvas) return;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true,
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    const geometry = new THREE.IcosahedronGeometry(10, 2);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x22d3ee,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.08,
+    });
+    const earth = new THREE.Mesh(geometry, material);
+    scene.add(earth);
+    camera.position.z = 20;
+
+    let mouseX = 0,
+      mouseY = 0;
+    let spinBoost = 0;
+
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX - window.innerWidth / 2;
+      mouseY = e.clientY - window.innerHeight / 2;
+    });
+    document.addEventListener("mousedown", () => {
+      spinBoost = 0.5;
+    });
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      spinBoost *= 0.95;
+      earth.rotation.y += 0.002 + spinBoost;
+      earth.rotation.y += 0.05 * (mouseX * 0.001 - earth.rotation.y);
+      earth.rotation.x += 0.05 * (mouseY * 0.001 - earth.rotation.x);
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+});
