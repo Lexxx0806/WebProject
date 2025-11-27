@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lite — Web Inspector</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="menu-wrapper">
+      <button id="menu-toggle" class="menu-orb">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+    <div id="menu-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="menu-close" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="overlay-grid">
+          <div class="nav-links">
+            <h3>Select Module</h3>
+            <a href="index.html" class="menu-link">Home Base</a>
+            <a
+              href="inspector.html"
+              class="menu-link"
+              style="color: var(--accent)"
+              >Web Inspector</a
+            >
+            <a href="calculator.html" class="menu-link">Habit Estimator</a>
+            <a href="game.html" class="menu-link">Simulation</a>
+            <a href="report.html" class="menu-link highlight-link"
+              >Read Report</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <section class="card reveal active" style="margin-top: 60px">
+        <div class="card-header">
+          <h2>
+            <i class="fa-solid fa-magnifying-glass-chart accent"></i> Live
+            Carbon Audit
+          </h2>
+          <p>Enter a URL. We will scan its code size and energy source.</p>
+        </div>
+
+        <div class="inspector-box">
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="site-url"
+              placeholder="example.com"
+              autocomplete="off"
+            />
+            <button id="check-site-btn" class="btn btn-primary">
+              Run Audit
+            </button>
+          </div>
+
+          <div
+            class="size-slider-group"
+            id="manual-override"
+            style="
+              display: none;
+              border-top: 1px solid rgba(255, 255, 255, 0.1);
+              margin-top: 20px;
+              padding-top: 20px;
+            "
+          >
+            <label
+              >⚠️ Scan blocked. Estimate size:
+              <span id="weight-val" class="accent">2.2</span> MB</label
+            >
+            <input
+              type="range"
+              id="page-weight"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value="2.2"
+            />
+            <p class="tiny-note">
+              *Use this slider to simulate different page weights.
+            </p>
+          </div>
+          <p class="tiny-note" id="status-msg" style="margin-top: 15px">
+            Ready to scan.
+          </p>
+        </div>
+
+        <div id="inspector-results" class="inspector-results">
+          <div class="grid">
+            <div class="res-card">
+              <h4>Eco Grade</h4>
+              <span id="site-rating" style="font-size: 3rem">--</span>
+            </div>
+            <div class="res-card">
+              <h4>Emissions</h4>
+              <span id="carbon-per-visit">0.00 g</span>
+              <small>CO₂ per visit</small>
+            </div>
+            <div class="res-card">
+              <h4>Energy Source</h4>
+              <span id="hosting-status">Checking...</span>
+            </div>
+          </div>
+
+          <div id="res-green" style="display: none"></div>
+          <div id="hosting-details" class="hosting-details"></div>
+
+          <div
+            style="
+              margin-top: 30px;
+              border-top: 1px solid rgba(255, 255, 255, 0.1);
+              padding-top: 20px;
+            "
+          >
+            <h3>
+              <i class="fa-solid fa-list-check accent"></i> Data Payload
+              Breakdown
+            </h3>
+            <div class="detail-row">
+              <span>Total Transfer Size:</span>
+              <span id="total-bytes" class="accent">0 KB</span>
+            </div>
+            <div class="detail-row">
+              <span>Images:</span> <span id="img-bytes">0 KB</span>
+            </div>
+            <div class="detail-row">
+              <span>Scripts (JS):</span> <span id="js-bytes">0 KB</span>
+            </div>
+            <div class="detail-row">
+              <span>Fonts:</span> <span id="font-bytes">0 KB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

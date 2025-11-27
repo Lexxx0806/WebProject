@@ -1,0 +1,27 @@
+{
+  "name": "webproject---copy",
+  "version": "1.0.0",
+  "description": "\u0000",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lexxx0806/WebProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Lexxx0806/WebProject/issues"
+  },
+  "homepage": "https://github.com/Lexxx0806/WebProject#readme",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "puppeteer": "^24.31.0"
+  }
+}

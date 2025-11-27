@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lite — Estimator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="menu-wrapper">
+      <button id="menu-toggle" class="menu-orb">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+    <div id="menu-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="menu-close" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="overlay-grid">
+          <div class="nav-links">
+            <h3>Select Module</h3>
+            <a href="index.html" class="menu-link">Home Base</a>
+            <a href="inspector.html" class="menu-link">Web Inspector</a>
+            <a
+              href="calculator.html"
+              class="menu-link"
+              style="color: var(--accent)"
+              >Habit Estimator</a
+            >
+            <a href="game.html" class="menu-link">Simulation</a>
+            <a href="report.html" class="menu-link highlight-link"
+              >Read Report</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <section id="calculator" class="card reveal active">
+        <div class="card-header">
+          <h2>Impact Estimator</h2>
+          <p>
+            See how your habits translate to <strong>real-world carbon</strong>.
+          </p>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Cloud Storage (GB)</label
+            ><input id="gb" type="number" value="50" />
+          </div>
+          <div class="input-group">
+            <label>Streaming (Hrs/Week)</label
+            ><input id="stream" type="number" value="10" />
+          </div>
+          <div class="input-group">
+            <label>Unread Emails (Weekly)</label
+            ><input id="email" type="number" value="20" />
+          </div>
+        </div>
+        <div class="action-row">
+          <button id="calc" class="btn btn-primary">Calculate CO₂</button>
+          <button id="reset-btn" class="btn btn-text">Reset</button>
+        </div>
+        <div id="visualizer" class="result-container">
+          <div class="score-circle">
+            <span id="points">—</span><small>kg CO₂/Year</small>
+          </div>
+          <div class="feedback-text">
+            <h3 id="feedback-msg">Calculate to see results</h3>
+            <p id="comparison-text"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="actions" class="reveal">
+        <div
+          class="header-group"
+          style="text-align: center; margin-bottom: 40px"
+        >
+          <h2>Cleanup Toolkit</h2>
+          <div class="progress-track">
+            <div
+              id="progress-fill"
+              class="progress-fill"
+              style="width: 0%"
+            ></div>
+          </div>
+          <p
+            id="progress-text"
+            style="margin-top: 10px; font-weight: 600; color: var(--accent)"
+          >
+            0% Complete
+          </p>
+        </div>
+        <div class="grid">
+          <div
+            class="card small-card task-card"
+            id="card-storage"
+            style="border-top: 4px solid var(--accent)"
+          >
+            <h3>1. Storage</h3>
+            <div class="btn-group">
+              <a
+                href="https://one.google.com/storage/management"
+                target="_blank"
+                class="btn btn-outline track-btn"
+                data-target="card-storage"
+                >Google One</a
+              >
+            </div>
+          </div>
+          <div
+            class="card small-card task-card"
+            id="card-email"
+            style="border-top: 4px solid var(--success)"
+          >
+            <h3>2. Email</h3>
+            <div class="btn-group">
+              <a
+                href="https://mail.google.com/mail/"
+                target="_blank"
+                class="btn btn-outline track-btn"
+                data-target="card-email"
+                >Clean Gmail</a
+              >
+            </div>
+          </div>
+          <div
+            class="card small-card task-card"
+            id="card-pledge"
+            style="border-top: 4px solid #f472b6"
+          >
+            <h3>3. Pledge</h3>
+            <button
+              id="pledge-btn"
+              class="btn btn-primary track-btn"
+              data-target="card-pledge"
+            >
+              I Pledge
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

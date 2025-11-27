@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lite — Simulation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="menu-wrapper">
+      <button id="menu-toggle" class="menu-orb">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+    <div id="menu-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="menu-close" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="overlay-grid">
+          <div class="nav-links">
+            <h3>Select Module</h3>
+            <a href="index.html" class="menu-link">Home Base</a>
+            <a href="inspector.html" class="menu-link">Web Inspector</a>
+            <a href="calculator.html" class="menu-link">Habit Estimator</a>
+            <a href="game.html" class="menu-link" style="color: var(--accent)"
+              >Simulation</a
+            >
+            <a href="report.html" class="menu-link highlight-link"
+              >Read Report</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <section id="game" class="card reveal active" style="margin-top: 40px">
+        <div class="card-header">
+          <h2>Mini-Game: Data Stream Defense</h2>
+          <p>Tap the falling "digital rot" before it overheats the server!</p>
+        </div>
+        <div id="game-board">
+          <div id="game-overlay">
+            <h3 id="game-msg">Ready to Defend?</h3>
+            <button id="start-game-btn" class="btn btn-primary">
+              Start Simulation
+            </button>
+          </div>
+          <div class="hud">
+            <span>Files Deleted: <b id="game-score">0</b></span>
+            <span
+              >Server Temp:
+              <b id="game-lives" style="color: var(--success)">40°C</b></span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
