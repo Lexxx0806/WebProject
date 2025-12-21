@@ -14,13 +14,11 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
     <div id="cursor"></div>
-    <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -73,12 +71,14 @@
             <br />It's time to shed the digital weight.
           </p>
           <div class="action-row">
-            <a href="inspector.html" class="btn btn-primary">Audit a Website</a>
+            <a href="inspector.html" class="slice" style="width: auto">
+              <span class="text">Audit a Website</span>
+            </a>
             <a
               href="calculator.html"
-              class="btn btn-outline"
+              class="slice"
               style="width: auto"
-              >Check My Impact</a
+              ><span class="text">Check My Impact</span></a
             >
           </div>
         </div>

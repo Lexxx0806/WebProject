@@ -57,8 +57,7 @@ function setupGlobalUI() {
       .forEach((l) => l.addEventListener("click", closeFn));
   }
 
-  // 3D Earth
-  setupEarth();
+
 
   // Cursor
   const cursor = document.getElementById("cursor");
@@ -236,6 +235,7 @@ function initInspector() {
       let usingRealData = false;
 
       try {
+        // Green Web API Check
         try {
           const greenResponse = await fetch(
             `https://api.thegreenwebfoundation.org/api/v3/greencheck/${domain}`
@@ -260,24 +260,84 @@ function initInspector() {
               details.innerHTML =
                 "Host does not provide public green evidence.";
             }
+          } else {
+            throw new Error("Green API failed");
           }
-        } catch (e) {}
+        } catch (e) {
+          console.warn("Green Web API check failed:", e.message);
+          currentIsGreen = false;
+          const hostStatus = document.getElementById("hosting-status");
+          hostStatus.textContent = "Checking...";
+        }
 
+        // PageSpeed API Check
         statusMsg.innerHTML = "Measuring Page Size...";
         const encodedUrl = encodeURIComponent(fullUrl);
         const psResponse = await fetch(
           `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&category=PERFORMANCE`
         );
-        if (!psResponse.ok) throw new Error("Blocked");
+        if (!psResponse.ok) throw new Error("PageSpeed API blocked or failed");
 
         const psData = await psResponse.json();
-        const totalBytes =
-          psData.lighthouseResult.audits["total-byte-weight"].numericValue;
+        if (!psData.lighthouseResult?.audits?.["total-byte-weight"]?.numericValue) {
+          throw new Error("Invalid PageSpeed response");
+        }
+
+        const totalBytes = psData.lighthouseResult.audits["total-byte-weight"].numericValue;
         detectedSize = (totalBytes / (1024 * 1024)).toFixed(2);
         usingRealData = true;
       } catch (err) {
+        console.warn("Page size measurement failed:", err.message);
         usingRealData = false;
         detectedSize = parseFloat(weightSlider.value);
+      }
+
+      // Backend API Scan
+      try {
+        const response = await fetch('/api/scan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: fullUrl }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.bytes) {
+          // Use backend data if available and better than PageSpeed
+          if (!usingRealData || data.bytes.total > totalBytes) {
+            detectedSize = (data.bytes.total / (1024 * 1024)).toFixed(2);
+            usingRealData = true;
+          }
+          // Update green status if backend has it
+          if (data.isGreen !== undefined) {
+            currentIsGreen = data.isGreen;
+            // Update UI with backend data
+            const hostStatus = document.getElementById("hosting-status");
+            const hostCard = document.getElementById("res-green");
+            const details = document.getElementById("hosting-details");
+
+            if (data.isGreen) {
+              hostStatus.textContent = "Green Energy";
+              hostStatus.style.color = "var(--success)";
+              hostCard.style.borderColor = "var(--success)";
+              details.innerHTML = `Hosted by: <strong>${data.hostName || "Green Partner"}</strong>`;
+            } else {
+              hostStatus.textContent = "Standard Grid";
+              hostStatus.style.color = "var(--text-muted)";
+              hostCard.style.borderColor = "rgba(255,255,255,0.1)";
+              details.innerHTML = "Host does not provide public green evidence.";
+            }
+          }
+        }
+      } catch (apiErr) {
+        console.warn("Backend API scan failed:", apiErr.message);
+        // Continue with frontend measurements
       }
 
       if (usingRealData) {
@@ -361,7 +421,7 @@ function initGame() {
             if (temperature >= 90) endGame();
           }
         }, 20);
-        item.addEventListener("mousedown", () => {
+        item.addEventListener("click", () => {
           if (!gameActive) return;
           clearInterval(fallTimer);
           item.classList.add("popped");
