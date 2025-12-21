@@ -412,7 +412,18 @@ function initGame() {
             if (item.parentNode) item.remove();
             temperature += 10;
             tempEl.textContent = temperature + "°C";
-            if (temperature >= 80) tempEl.style.color = "var(--danger)";
+
+            // Progressive visual effects based on temperature
+            if (temperature >= 60) {
+              gameBoard.classList.add("game-heating");
+              // Play warning sound for heating
+              playSound('warning');
+            }
+            if (temperature >= 80) {
+              tempEl.style.color = "var(--danger)";
+              gameBoard.classList.add("game-critical");
+            }
+
             gameBoard.style.borderColor = "var(--danger)";
             setTimeout(
               () => (gameBoard.style.borderColor = "rgba(255,255,255,0.05)"),
@@ -425,6 +436,15 @@ function initGame() {
           if (!gameActive) return;
           clearInterval(fallTimer);
           item.classList.add("popped");
+
+          // Create particle explosion effect
+          createParticleExplosion(item.offsetLeft + item.offsetWidth/2, item.offsetTop + item.offsetHeight/2);
+
+          // Add screen flash effect for high scores
+          if (score > 0 && score % 5 === 0) {
+            createScreenFlash();
+          }
+
           score++;
           scoreEl.textContent = score;
           setTimeout(() => {
@@ -435,6 +455,10 @@ function initGame() {
       function endGame() {
         gameActive = false;
         clearTimeout(gameInterval);
+
+        // Play game over sound
+        playSound('gameover');
+
         gameMsg.innerHTML = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
         startBtn.textContent = "Cooldown & Retry";
         overlay.style.display = "flex";
@@ -497,4 +521,109 @@ function setupEarth() {
     renderer.render(scene, camera);
   }
   animate();
+}
+
+// --- GAME VISUAL EFFECTS ---
+function createParticleExplosion(x, y) {
+  const gameBoard = document.getElementById("game-board");
+  const particleCount = 8;
+
+  // Play click sound
+  playSound('click');
+
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.className = "particle";
+    particle.style.left = x + "px";
+    particle.style.top = y + "px";
+
+    // Random direction and distance
+    const angle = (i / particleCount) * Math.PI * 2;
+    const distance = 30 + Math.random() * 40;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+
+    particle.style.setProperty("--tx", tx + "px");
+    particle.style.setProperty("--ty", ty + "px");
+
+    gameBoard.appendChild(particle);
+
+    // Remove particle after animation
+    setTimeout(() => {
+      if (particle.parentNode) particle.remove();
+    }, 600);
+  }
+}
+
+function createScreenFlash() {
+  const gameBoard = document.getElementById("game-board");
+
+  // Play milestone sound
+  playSound('milestone');
+
+  gameBoard.classList.add("screen-flash");
+
+  setTimeout(() => {
+    gameBoard.classList.remove("screen-flash");
+  }, 200);
+}
+
+// --- GAME AUDIO EFFECTS ---
+function playSound(type) {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    switch(type) {
+      case 'click':
+        // Short, pleasant beep for successful clicks
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+        break;
+
+      case 'milestone':
+        // Celebration sound for score milestones
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2); // G5
+        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + 0.2);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+        break;
+
+      case 'warning':
+        // Warning sound for temperature increases
+        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(250, audioContext.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.4);
+        break;
+
+      case 'gameover':
+        // Descending tone for game over
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.8);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.8);
+        break;
+    }
+  } catch (error) {
+    // Silently fail if Web Audio API is not supported
+    console.warn('Audio not supported:', error.message);
+  }
 }
