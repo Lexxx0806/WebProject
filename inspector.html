@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Lite — Web Inspector</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -19,10 +19,14 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
+      <button id="theme-toggle" class="theme-toggle">
+        <i class="fa-solid fa-sun"></i>
+      </button>
       <button id="menu-toggle" class="menu-orb">
         <i class="fa-solid fa-bars-staggered"></i>
       </button>
     </div>
+
     <div id="menu-overlay" class="overlay">
       <div class="overlay-content">
         <button id="menu-close" class="close-btn">
@@ -76,7 +80,7 @@
             id="manual-override"
             style="
               display: none;
-              border-top: 1px solid rgba(255, 255, 255, 0.1);
+              border-top: 1px solid var(--border);
               margin-top: 20px;
               padding-top: 20px;
             "
@@ -93,9 +97,6 @@
               step="0.1"
               value="2.2"
             />
-            <p class="tiny-note">
-              *Use this slider to simulate different page weights.
-            </p>
           </div>
           <p class="tiny-note" id="status-msg" style="margin-top: 15px">
             Ready to scan.
@@ -118,35 +119,8 @@
               <span id="hosting-status">Checking...</span>
             </div>
           </div>
-
           <div id="res-green" style="display: none"></div>
           <div id="hosting-details" class="hosting-details"></div>
-
-          <div
-            style="
-              margin-top: 30px;
-              border-top: 1px solid rgba(255, 255, 255, 0.1);
-              padding-top: 20px;
-            "
-          >
-            <h3>
-              <i class="fa-solid fa-list-check accent"></i> Data Payload
-              Breakdown
-            </h3>
-            <div class="detail-row">
-              <span>Total Transfer Size:</span>
-              <span id="total-bytes" class="accent">0 KB</span>
-            </div>
-            <div class="detail-row">
-              <span>Images:</span> <span id="img-bytes">0 KB</span>
-            </div>
-            <div class="detail-row">
-              <span>Scripts (JS):</span> <span id="js-bytes">0 KB</span>
-            </div>
-            <div class="detail-row">
-              <span>Fonts:</span> <span id="font-bytes">0 KB</span>
-            </div>
-          </div>
         </div>
       </section>
     </main>

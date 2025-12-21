@@ -3,21 +3,55 @@ const cors = require("cors");
 const axios = require("axios");
 const puppeteer = require("puppeteer");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
+app.use(express.json({ limit: '10mb' })); // Prevent large payloads
+app.use(express.urlencoded({ extended: true }));
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
 
 app.get("/api/scan", async (req, res) => {
   const targetUrl = req.query.url;
 
-  if (!targetUrl) return res.status(400).json({ error: "URL required" });
+  if (!targetUrl) {
+    return res.status(400).json({ error: "URL parameter is required" });
+  }
 
-  console.log(`[Server] 🟢 Starting Scan: ${targetUrl}`);
+  // Basic URL validation
+  let url;
+  try {
+    url = new URL(targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`);
+    if (!url.protocol.startsWith('http')) {
+      throw new Error('Invalid protocol');
+    }
+  } catch (error) {
+    return res.status(400).json({ error: "Invalid URL format" });
+  }
+
+  // Rate limiting (simple in-memory check)
+  const clientIP = req.ip || req.connection.remoteAddress;
+  const now = Date.now();
+  if (!global.rateLimit) global.rateLimit = new Map();
+  const lastRequest = global.rateLimit.get(clientIP);
+  if (lastRequest && now - lastRequest < 1000) { // 1 request per second
+    return res.status(429).json({ error: "Too many requests. Please wait." });
+  }
+  global.rateLimit.set(clientIP, now);
+
+  console.log(`[Server] 🟢 Starting Scan: ${url.href}`);
 
   // Default Fallback (Only used if everything crashes)
   let resultData = {
     success: true,
-    url: targetUrl,
+    url: url.href,
     isGreen: false,
     hostName: "Standard Grid",
     bytes: { total: 0, image: 0, script: 0, font: 0 },
@@ -89,7 +123,7 @@ app.get("/api/scan", async (req, res) => {
 
     // Visit the page (Timeout after 15s to be safe)
     await page
-      .goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 })
+      .goto(url.href, { waitUntil: "domcontentloaded", timeout: 15000 })
       .catch(() => {});
 
     // Give it a second for extra lazy-loaded images

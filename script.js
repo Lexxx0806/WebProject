@@ -1,59 +1,79 @@
+/**
+ * Main application entry point
+ * Initializes different modules based on current page
+ */
 document.addEventListener("DOMContentLoaded", () => {
   setupGlobalUI();
+
+  // Page-specific module initialization
+  if (document.getElementById("calc-btn")) initCalculator();
+  if (document.getElementById("launch-mail-btn")) initInboxHunter();
   if (document.getElementById("check-site-btn")) initInspector();
-  if (document.getElementById("calc")) initCalculator();
   if (document.getElementById("start-game-btn")) initGame();
-  if (document.querySelectorAll(".track-btn").length > 0) initChecklist();
 });
 
-// --- 1. GLOBAL UI ---
+/* --- 1. GLOBAL UI (Theme + Menu) --- */
 function setupGlobalUI() {
-  // Custom Cursor
-  const cursor = document.getElementById("cursor");
-  if (cursor) {
-    document.addEventListener("mousemove", (e) => {
-      cursor.style.left = e.clientX + "px";
-      cursor.style.top = e.clientY + "px";
-    });
-    document
-      .querySelectorAll("a, button, .menu-orb, summary, input")
-      .forEach((el) => {
-        el.addEventListener("mouseenter", () =>
-          document.body.classList.add("hovering")
-        );
-        el.addEventListener("mouseleave", () =>
-          document.body.classList.remove("hovering")
-        );
-      });
+  // Theme Toggle
+  const themeBtn = document.getElementById("theme-toggle");
+  const body = document.body;
+  const icon = themeBtn.querySelector("i");
+
+  // Load saved theme
+  if (localStorage.getItem("theme") === "light") {
+    body.setAttribute("data-theme", "light");
+    icon.classList.replace("fa-sun", "fa-moon");
   }
 
+  themeBtn.addEventListener("click", () => {
+    if (body.getAttribute("data-theme") === "light") {
+      body.removeAttribute("data-theme");
+      localStorage.setItem("theme", "dark");
+      icon.classList.replace("fa-moon", "fa-sun");
+    } else {
+      body.setAttribute("data-theme", "light");
+      localStorage.setItem("theme", "light");
+      icon.classList.replace("fa-sun", "fa-moon");
+    }
+  });
+
   // Menu
-  const toggle = document.getElementById("menu-toggle");
-  const close = document.getElementById("menu-close");
-  const overlay = document.getElementById("menu-overlay");
-  if (toggle && overlay) {
-    toggle.addEventListener("click", () => {
-      overlay.classList.add("active");
-      toggle.style.opacity = 0;
+  const menuToggle = document.getElementById("menu-toggle");
+  const menuOverlay = document.getElementById("menu-overlay");
+  const menuClose = document.getElementById("menu-close");
+
+  if (menuToggle && menuOverlay) {
+    menuToggle.addEventListener("click", () => {
+      menuOverlay.classList.add("active");
+      menuToggle.style.opacity = 0;
     });
     const closeFn = () => {
-      overlay.classList.remove("active");
-      toggle.style.opacity = 1;
+      menuOverlay.classList.remove("active");
+      menuToggle.style.opacity = 1;
     };
-    if (close) close.addEventListener("click", closeFn);
+    menuClose.addEventListener("click", closeFn);
     document
-      .querySelectorAll(".close-menu-on-click")
+      .querySelectorAll(".menu-link")
       .forEach((l) => l.addEventListener("click", closeFn));
   }
 
-  document.querySelectorAll(".accordion-trigger").forEach((acc) => {
-    acc.addEventListener("click", (e) => {
-      e.stopPropagation();
-      acc.parentElement.classList.toggle("active");
-    });
-  });
-
+  // 3D Earth
   setupEarth();
+
+  // Cursor
+  const cursor = document.getElementById("cursor");
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+  document.querySelectorAll("a, button").forEach((el) => {
+    el.addEventListener("mouseenter", () =>
+      document.body.classList.add("hovering")
+    );
+    el.addEventListener("mouseleave", () =>
+      document.body.classList.remove("hovering")
+    );
+  });
 
   // Scroll Reveal
   const observer = new IntersectionObserver(
@@ -70,58 +90,89 @@ function setupGlobalUI() {
   document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 }
 
-function setupEarth() {
-  const canvas = document.querySelector("#bg-canvas");
-  if (!canvas) return;
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    alpha: true,
-    antialias: true,
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  const geometry = new THREE.IcosahedronGeometry(10, 2);
-  const material = new THREE.MeshBasicMaterial({
-    color: 0x22d3ee,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.08,
-  });
-  const earth = new THREE.Mesh(geometry, material);
-  scene.add(earth);
-  camera.position.z = 20;
-  let mouseX = 0,
-    mouseY = 0,
-    spin = 0;
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX - window.innerWidth / 2;
-    mouseY = e.clientY - window.innerHeight / 2;
-  });
-  document.addEventListener("mousedown", () => (spin = 0.5));
-  window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-  function animate() {
-    requestAnimationFrame(animate);
-    spin *= 0.95;
-    earth.rotation.y += 0.002 + spin;
-    earth.rotation.y += 0.05 * (mouseX * 0.001 - earth.rotation.y);
-    earth.rotation.x += 0.05 * (mouseY * 0.001 - earth.rotation.x);
-    renderer.render(scene, camera);
+/* --- 2. INBOX HUNTER --- */
+function initInboxHunter() {
+  const providerSel = document.getElementById("mail-provider");
+  const missionSel = document.getElementById("mail-mission");
+  const btn = document.getElementById("launch-mail-btn");
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const provider = providerSel.value;
+      const mission = missionSel.value;
+      let url = "";
+
+      if (provider === "gmail") {
+        const base = "https://mail.google.com/mail/u/0/#search/";
+        if (mission === "newsletters")
+          url = base + "category:promotions+OR+label:^unsub";
+        if (mission === "large") url = base + "size:10m";
+        if (mission === "old") url = base + "older_than:2y";
+      } else if (provider === "outlook") {
+        url = "https://outlook.live.com/mail/0/";
+        alert(
+          "In Outlook search bar type: 'IsFrom:Newsletters' or 'Size:>10MB'"
+        );
+      } else if (provider === "yahoo") {
+        url = "https://mail.yahoo.com/d/search/keyword=unsubscribe";
+      }
+
+      if (url) window.open(url, "_blank");
+    });
   }
-  animate();
 }
 
-// --- 2. WEB INSPECTOR (FIXED: Updates UI on Fallback) ---
+/**
+ * Initializes the carbon footprint calculator
+ */
+function initCalculator() {
+  const btn = document.getElementById("calc-btn");
+  const resultBox = document.getElementById("result-box");
+  const totalEl = document.getElementById("total-co2");
+  const treeEl = document.getElementById("tree-count");
+  const inputs = ["gb", "stream", "email"];
+
+  // Input validation
+  inputs.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener("input", (e) => {
+        const value = parseFloat(e.target.value);
+        if (value < 0 || isNaN(value)) {
+          e.target.value = Math.max(0, value || 0);
+        }
+      });
+    }
+  });
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const gb = Math.max(0, parseFloat(document.getElementById("gb").value) || 0);
+      const stream = Math.max(0, parseFloat(document.getElementById("stream").value) || 0);
+      const email = Math.max(0, parseFloat(document.getElementById("email").value) || 0);
+
+      // Calculate annual carbon footprint (kg CO₂)
+      // Cloud storage: 0.2 kg/GB/year
+      // Streaming: 0.055 kg/hour * 52 weeks
+      // Emails: 0.004 kg/email * 52 weeks
+      const total = (
+        gb * 0.2 +
+        stream * 52 * 0.055 +
+        email * 52 * 0.004
+      ).toFixed(1);
+
+      // Trees needed to absorb this CO₂ annually
+      const trees = Math.max(1, Math.ceil(total / 21));
+
+      totalEl.textContent = total;
+      treeEl.textContent = trees;
+      resultBox.style.display = "block";
+      resultBox.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+}
+
+/* --- 4. WEB INSPECTOR (WITH FALLBACK) --- */
 function initInspector() {
   const checkBtn = document.getElementById("check-site-btn");
   const input = document.getElementById("site-url");
@@ -131,22 +182,21 @@ function initInspector() {
   const weightVal = document.getElementById("weight-val");
   const sliderGroup = document.getElementById("manual-override");
 
-  // State
-  let currentIsGreen = false;
-  let currentHostName = "Standard Grid";
+  if (weightSlider)
+    weightSlider.addEventListener("input", (e) => {
+      weightVal.textContent = e.target.value;
+      updateCalculation();
+    });
 
-  // Live Math Calculation
+  let currentIsGreen = false;
+
   function updateCalculation() {
-    const sizeInMB = parseFloat(weightSlider.value);
-    const sizeInGB = sizeInMB / 1024;
+    const sizeInGB = parseFloat(weightSlider.value) / 1024;
     const energy = sizeInGB * 0.81;
     const carbonFactor = currentIsGreen ? 50 : 442;
     const co2 = (energy * carbonFactor).toFixed(3);
-
-    // Update Emissions
     document.getElementById("carbon-per-visit").textContent = co2 + " g";
 
-    // Update Grading
     const ratingEl = document.getElementById("site-rating");
     ratingEl.className = "res-card";
     if (co2 < 0.095) {
@@ -161,104 +211,84 @@ function initInspector() {
     } else if (co2 < 0.493) {
       ratingEl.textContent = "C";
       ratingEl.style.color = "#fbbf24";
-    } else if (co2 < 0.656) {
-      ratingEl.textContent = "D";
-      ratingEl.style.color = "#f87171";
     } else {
       ratingEl.textContent = "F";
       ratingEl.classList.add("rating-bad");
     }
-
-    // Update Breakdown Table (Estimate based on averages)
-    // Images ~50%, JS ~25%, Fonts ~5%, Other ~20%
-    const totalKB = sizeInMB * 1024;
-    document.getElementById("total-bytes").textContent =
-      totalKB.toFixed(0) + " KB";
-    document.getElementById("img-bytes").textContent =
-      (totalKB * 0.5).toFixed(0) + " KB";
-    document.getElementById("js-bytes").textContent =
-      (totalKB * 0.25).toFixed(0) + " KB";
-    document.getElementById("font-bytes").textContent =
-      (totalKB * 0.05).toFixed(0) + " KB";
-  }
-
-  // Slider Listener
-  if (weightSlider) {
-    weightSlider.addEventListener("input", (e) => {
-      weightVal.textContent = e.target.value;
-      updateCalculation(); // Live update
-    });
   }
 
   if (checkBtn) {
     checkBtn.addEventListener("click", async () => {
       const rawInput = input.value.trim();
       if (!rawInput) return alert("Please enter a URL");
-
+      const domain = rawInput.replace(/^https?:\/\//, "").replace(/\/$/, "");
       const fullUrl = rawInput.startsWith("http")
         ? rawInput
-        : `https://${rawInput}`;
+        : `https://${domain}`;
 
       checkBtn.textContent = "Scanning...";
       checkBtn.disabled = true;
-      statusMsg.innerHTML = "Contacting Mission Control Server...";
+      statusMsg.innerHTML = "Connecting...";
       results.style.display = "none";
       sliderGroup.style.display = "none";
-
-      // Reset State
       currentIsGreen = false;
-      currentHostName = "Standard Grid";
+      let detectedSize = 0;
       let usingRealData = false;
 
       try {
-        // Call Local Server
-        const response = await fetch(
-          `http://localhost:3000/api/scan?url=${encodeURIComponent(fullUrl)}`
+        try {
+          const greenResponse = await fetch(
+            `https://api.thegreenwebfoundation.org/api/v3/greencheck/${domain}`
+          );
+          if (greenResponse.ok) {
+            const greenData = await greenResponse.json();
+            currentIsGreen = greenData.green;
+            const hostStatus = document.getElementById("hosting-status");
+            const hostCard = document.getElementById("res-green");
+            const details = document.getElementById("hosting-details");
+            if (currentIsGreen) {
+              hostStatus.textContent = "Green Energy";
+              hostStatus.style.color = "var(--success)";
+              hostCard.style.borderColor = "var(--success)";
+              details.innerHTML = `Hosted by: <strong>${
+                greenData.hosted_by || "Green Partner"
+              }</strong>`;
+            } else {
+              hostStatus.textContent = "Standard Grid";
+              hostStatus.style.color = "var(--text-muted)";
+              hostCard.style.borderColor = "rgba(255,255,255,0.1)";
+              details.innerHTML =
+                "Host does not provide public green evidence.";
+            }
+          }
+        } catch (e) {}
+
+        statusMsg.innerHTML = "Measuring Page Size...";
+        const encodedUrl = encodeURIComponent(fullUrl);
+        const psResponse = await fetch(
+          `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&category=PERFORMANCE`
         );
-        const data = await response.json();
+        if (!psResponse.ok) throw new Error("Blocked");
 
-        // Parse Data
-        usingRealData = !data.isEstimate;
-        currentIsGreen = data.isGreen;
-        currentHostName = data.hostName || "Standard Grid";
-
-        // Set Size (Real or Estimate)
-        const mbSize = (data.bytes.total / (1024 * 1024)).toFixed(2);
-        weightSlider.value = mbSize;
-        weightVal.textContent = mbSize;
-
-        // --- UPDATE HOSTING UI ---
-        const hostStatus = document.getElementById("hosting-status");
-        const hostCard = document.getElementById("res-green");
-        const details = document.getElementById("hosting-details");
-
-        if (currentIsGreen) {
-          hostStatus.textContent = "Green Energy";
-          hostStatus.style.color = "var(--success)";
-          hostCard.style.borderColor = "var(--success)";
-          details.innerHTML = `Hosted by: <strong>${currentHostName}</strong>`;
-        } else {
-          hostStatus.textContent = "Standard Grid";
-          hostStatus.style.color = "var(--text-muted)";
-          hostCard.style.borderColor = "rgba(255,255,255,0.1)";
-          details.innerHTML = "Host does not provide public green evidence.";
-        }
+        const psData = await psResponse.json();
+        const totalBytes =
+          psData.lighthouseResult.audits["total-byte-weight"].numericValue;
+        detectedSize = (totalBytes / (1024 * 1024)).toFixed(2);
+        usingRealData = true;
       } catch (err) {
-        console.warn("Server Error:", err);
         usingRealData = false;
-        // If server dies, default to 2.2MB Grey Hosting
-        weightSlider.value = 2.2;
+        detectedSize = parseFloat(weightSlider.value);
       }
 
-      // Finalize
       if (usingRealData) {
-        statusMsg.innerHTML = `<span style="color:var(--success)">✔ Audit Complete.</span> Real data verified.`;
+        weightSlider.value = detectedSize;
+        weightVal.textContent = detectedSize;
+        statusMsg.innerHTML = `<span style="color:var(--success)">✔ Scan Complete.</span> Real data used.`;
       } else {
-        statusMsg.innerHTML = `<span style="color:#fbbf24">⚠ Scan Blocked.</span> Using estimate (${weightSlider.value}MB).`;
-        sliderGroup.style.display = "block"; // Show slider
+        statusMsg.innerHTML = `<span style="color:#fbbf24">⚠ Scan Blocked.</span> Using estimate (${detectedSize}MB).`;
+        sliderGroup.style.display = "block";
       }
 
-      // Force update calculation & table
       updateCalculation();
       results.style.display = "block";
       checkBtn.textContent = "Run Audit";
@@ -267,84 +297,7 @@ function initInspector() {
   }
 }
 
-// --- 3. CALCULATOR ---
-function initCalculator() {
-  const calcBtn = document.getElementById("calc");
-  const resetBtn = document.getElementById("reset-btn");
-  const resultContainer = document.getElementById("visualizer");
-  const pointsDisplay = document.getElementById("points");
-  const inputs = {
-    gb: document.getElementById("gb"),
-    stream: document.getElementById("stream"),
-    email: document.getElementById("email"),
-  };
-
-  if (calcBtn) {
-    calcBtn.addEventListener("click", () => {
-      const gb = parseFloat(inputs.gb.value) || 0;
-      const stream = parseFloat(inputs.stream.value) || 0;
-      const email = parseFloat(inputs.email.value) || 0;
-      const totalCO2 = (
-        gb * 0.2 +
-        stream * 52 * 0.055 +
-        email * 52 * 0.004
-      ).toFixed(1);
-      const treesNeeded = Math.ceil(totalCO2 / 21);
-      pointsDisplay.textContent = totalCO2;
-      resultContainer.style.display = "flex";
-      const circle = document.querySelector(".score-circle");
-      const msg = document.getElementById("feedback-msg");
-      if (totalCO2 < 50) {
-        msg.textContent = "Eco-Friendly 🌿";
-        circle.style.borderColor = "var(--success)";
-      } else if (totalCO2 < 150) {
-        msg.textContent = "Average Footprint ☁️";
-        circle.style.borderColor = "var(--accent)";
-      } else {
-        msg.textContent = "Heavy Emitter 🏭";
-        circle.style.borderColor = "var(--danger)";
-      }
-      document.getElementById(
-        "comparison-text"
-      ).innerHTML = `Your digital habits produce <strong>${totalCO2} kg</strong> of CO₂ per year.<br>You would need <strong>${treesNeeded} trees</strong> 🌳 to absorb this pollution.`;
-      resultContainer.scrollIntoView({ behavior: "smooth" });
-    });
-    resetBtn.addEventListener("click", () => {
-      resultContainer.style.display = "none";
-      inputs.gb.value = 50;
-      inputs.stream.value = 10;
-      inputs.email.value = 20;
-    });
-  }
-}
-
-// --- 4. CHECKLIST ---
-function initChecklist() {
-  const trackBtns = document.querySelectorAll(".track-btn");
-  const progressBar = document.getElementById("progress-fill");
-  const progressText = document.getElementById("progress-text");
-  let completedTasks = new Set();
-  trackBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("data-target");
-      const card = document.getElementById(targetId);
-      if (!completedTasks.has(targetId)) {
-        completedTasks.add(targetId);
-        card.classList.add("completed");
-        const percentage = (completedTasks.size / 3) * 100;
-        progressBar.style.width = percentage + "%";
-        progressText.textContent = Math.round(percentage) + "% Complete";
-        if (completedTasks.size === 3) {
-          progressText.textContent = "100% - Clean! 🚀";
-          progressText.style.color = "var(--success)";
-          confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
-        }
-      }
-    });
-  });
-}
-
-// --- 5. GAME ---
+/* --- 5. GAME --- */
 function initGame() {
   const startBtn = document.getElementById("start-game-btn");
   const gameBoard = document.getElementById("game-board");
@@ -422,11 +375,66 @@ function initGame() {
       function endGame() {
         gameActive = false;
         clearTimeout(gameInterval);
-        gameMsg.innerHTML = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;color:#fff;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
+        gameMsg.innerHTML = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
         startBtn.textContent = "Cooldown & Retry";
         overlay.style.display = "flex";
       }
       gameLoop();
     });
   }
+}
+
+function setupEarth() {
+  const canvas = document.querySelector("#bg-canvas");
+  if (!canvas) return;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  const geometry = new THREE.IcosahedronGeometry(10, 2);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x22d3ee,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.08,
+  });
+  const earth = new THREE.Mesh(geometry, material);
+  scene.add(earth);
+  camera.position.z = 20;
+
+  let mouseX = 0,
+    mouseY = 0,
+    spinBoost = 0;
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX - window.innerWidth / 2;
+    mouseY = e.clientY - window.innerHeight / 2;
+  });
+  document.addEventListener("mousedown", () => {
+    spinBoost = 0.5;
+  });
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    spinBoost *= 0.95;
+    earth.rotation.y += 0.002 + spinBoost;
+    earth.rotation.y += 0.05 * (mouseX * 0.001 - earth.rotation.y);
+    earth.rotation.x += 0.05 * (mouseY * 0.001 - earth.rotation.x);
+    renderer.render(scene, camera);
+  }
+  animate();
 }

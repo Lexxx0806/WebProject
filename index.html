@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lite — Home Base</title>
+    <title>Lite — Digital Sustainability</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -23,14 +23,11 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
-      <div class="menu-preview">
-        <div class="preview-header">
-          <span class="status-dot"></span> System Online
-        </div>
-        <div class="preview-footer">Open Mission Control</div>
-      </div>
-      <button id="menu-toggle" class="menu-orb">
-        <i class="fa-solid fa-bars-staggered"></i>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <i class="fa-solid fa-sun" aria-hidden="true"></i>
+      </button>
+      <button id="menu-toggle" class="menu-orb" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -55,9 +52,11 @@
           <div class="about-section">
             <h3>Status</h3>
             <div class="progress-card">
-              <h4><i class="fa-solid fa-satellite-dish accent"></i> Ready</h4>
+              <h4>
+                <i class="fa-solid fa-satellite-dish accent"></i> System Online
+              </h4>
               <p style="font-size: 0.9rem">
-                Select a tool to begin your digital cleanup mission.
+                V21.0 Ready. Select a tool to begin.
               </p>
             </div>
           </div>
@@ -65,56 +64,60 @@
       </div>
     </div>
 
-    <main
-      class="container"
-      style="
-        height: 80vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      "
-    >
+    <main class="container">
       <section class="hero reveal active">
         <div class="hero-content">
           <h1>Lite.</h1>
           <p class="hero-sub">
-            Shed the digital weight. <br />
-            The photos you never delete and streams you leave running live on
-            servers that burn energy.
+            The internet emits 1.6 billion tons of greenhouse gases per year.
+            <br />It's time to shed the digital weight.
           </p>
-          <div class="stats-row">
-            <div class="stat-pill">
-              <i class="fa-solid fa-magnifying-glass accent"></i> Audit
-            </div>
-            <div class="stat-pill">
-              <i class="fa-solid fa-calculator accent"></i> Estimate
-            </div>
-            <div class="stat-pill">
-              <i class="fa-solid fa-gamepad accent"></i> Gamify
-            </div>
+          <div class="action-row">
+            <a href="inspector.html" class="btn btn-primary">Audit a Website</a>
+            <a
+              href="calculator.html"
+              class="btn btn-outline"
+              style="width: auto"
+              >Check My Impact</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal" style="margin-top: 80px">
+        <h2 style="text-align: center; margin-bottom: 40px">
+          The Invisible Problem
+        </h2>
+        <div class="grid">
+          <div class="card small-card">
+            <i class="fa-solid fa-cloud-arrow-down icon-large"></i>
+            <h3>Data Hoarding</h3>
+            <p>
+              90% of data created is never accessed again. It sits on servers,
+              burning coal energy 24/7.
+            </p>
+          </div>
+          <div class="card small-card">
+            <i class="fa-solid fa-server icon-large"></i>
+            <h3>Dirty Hosting</h3>
+            <p>
+              Many data centers rely on fossil fuels. Every visit to a non-green
+              site creates carbon.
+            </p>
+          </div>
+          <div class="card small-card">
+            <i class="fa-solid fa-weight-hanging icon-large"></i>
+            <h3>Bloated Web</h3>
+            <p>
+              Average page size has tripled since 2010. Heavier sites = slower
+              phones & more energy.
+            </p>
           </div>
         </div>
       </section>
     </main>
 
-    <footer
-      style="
-        position: fixed;
-        bottom: 20px;
-        width: 100%;
-        text-align: center;
-        pointer-events: none;
-      "
-    >
-      <div style="pointer-events: auto; display: inline-block">
-        <div id="wcb" class="carbonbadge wcb-d"></div>
-        <script
-          src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js"
-          defer
-        ></script>
-      </div>
-    </footer>
+    
 
     <script src="script.js"></script>
   </body>

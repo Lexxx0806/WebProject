@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Lite — Simulation</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -19,10 +19,14 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
+      <button id="theme-toggle" class="theme-toggle">
+        <i class="fa-solid fa-sun"></i>
+      </button>
       <button id="menu-toggle" class="menu-orb">
         <i class="fa-solid fa-bars-staggered"></i>
       </button>
     </div>
+
     <div id="menu-overlay" class="overlay">
       <div class="overlay-content">
         <button id="menu-close" class="close-btn">
@@ -36,9 +40,6 @@
             <a href="calculator.html" class="menu-link">Habit Estimator</a>
             <a href="game.html" class="menu-link" style="color: var(--accent)"
               >Simulation</a
-            >
-            <a href="report.html" class="menu-link highlight-link"
-              >Read Report</a
             >
           </div>
         </div>

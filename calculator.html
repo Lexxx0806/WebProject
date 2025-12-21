@@ -4,14 +4,13 @@
     <meta charset="UTF-8" />
     <title>Lite — Estimator</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -20,10 +19,14 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
+      <button id="theme-toggle" class="theme-toggle">
+        <i class="fa-solid fa-sun"></i>
+      </button>
       <button id="menu-toggle" class="menu-orb">
         <i class="fa-solid fa-bars-staggered"></i>
       </button>
     </div>
+
     <div id="menu-overlay" class="overlay">
       <div class="overlay-content">
         <button id="menu-close" class="close-btn">
@@ -50,13 +53,12 @@
     </div>
 
     <main class="container">
-      <section id="calculator" class="card reveal active">
+      <section class="card reveal active" style="margin-top: 60px">
         <div class="card-header">
           <h2>Impact Estimator</h2>
-          <p>
-            See how your habits translate to <strong>real-world carbon</strong>.
-          </p>
+          <p>Enter your weekly habits to see your annual footprint.</p>
         </div>
+
         <div class="input-grid">
           <div class="input-group">
             <label>Cloud Storage (GB)</label
@@ -67,90 +69,67 @@
             ><input id="stream" type="number" value="10" />
           </div>
           <div class="input-group">
-            <label>Unread Emails (Weekly)</label
-            ><input id="email" type="number" value="20" />
+            <label>Emails (Weekly)</label
+            ><input id="email" type="number" value="100" />
           </div>
         </div>
+
         <div class="action-row">
-          <button id="calc" class="btn btn-primary">Calculate CO₂</button>
-          <button id="reset-btn" class="btn btn-text">Reset</button>
+          <button id="calc-btn" class="btn btn-primary">Calculate</button>
         </div>
-        <div id="visualizer" class="result-container">
-          <div class="score-circle">
-            <span id="points">—</span><small>kg CO₂/Year</small>
+
+        <div
+          id="result-box"
+          style="display: none; margin-top: 40px; text-align: center"
+        >
+          <div class="chart-donut">
+            <div class="chart-hole">
+              <span style="font-size: 2rem; font-weight: 800" id="total-co2"
+                >0</span
+              >
+              <small>kg CO₂</small>
+            </div>
           </div>
-          <div class="feedback-text">
-            <h3 id="feedback-msg">Calculate to see results</h3>
-            <p id="comparison-text"></p>
-          </div>
+          <p>
+            That's equal to
+            <strong id="tree-count" class="accent">0</strong> trees absorbing
+            carbon for a year.
+          </p>
         </div>
       </section>
 
-      <section id="actions" class="reveal">
-        <div
-          class="header-group"
-          style="text-align: center; margin-bottom: 40px"
-        >
-          <h2>Cleanup Toolkit</h2>
-          <div class="progress-track">
-            <div
-              id="progress-fill"
-              class="progress-fill"
-              style="width: 0%"
-            ></div>
-          </div>
-          <p
-            id="progress-text"
-            style="margin-top: 10px; font-weight: 600; color: var(--accent)"
-          >
-            0% Complete
+      <section class="card reveal">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-broom accent"></i> Inbox Hunter</h2>
+          <p>
+            Generate smart search links to mass-delete junk emails instantly.
           </p>
         </div>
-        <div class="grid">
-          <div
-            class="card small-card task-card"
-            id="card-storage"
-            style="border-top: 4px solid var(--accent)"
-          >
-            <h3>1. Storage</h3>
-            <div class="btn-group">
-              <a
-                href="https://one.google.com/storage/management"
-                target="_blank"
-                class="btn btn-outline track-btn"
-                data-target="card-storage"
-                >Google One</a
-              >
-            </div>
-          </div>
-          <div
-            class="card small-card task-card"
-            id="card-email"
-            style="border-top: 4px solid var(--success)"
-          >
-            <h3>2. Email</h3>
-            <div class="btn-group">
-              <a
-                href="https://mail.google.com/mail/"
-                target="_blank"
-                class="btn btn-outline track-btn"
-                data-target="card-email"
-                >Clean Gmail</a
-              >
-            </div>
-          </div>
-          <div
-            class="card small-card task-card"
-            id="card-pledge"
-            style="border-top: 4px solid #f472b6"
-          >
-            <h3>3. Pledge</h3>
-            <button
-              id="pledge-btn"
-              class="btn btn-primary track-btn"
-              data-target="card-pledge"
+        <div class="grid" style="margin-top: 30px">
+          <div>
+            <label style="display: block; margin-bottom: 10px"
+              >1. Choose Provider</label
             >
-              I Pledge
+            <select id="mail-provider" style="margin-bottom: 20px">
+              <option value="gmail">Gmail</option>
+              <option value="outlook">Outlook / Hotmail</option>
+              <option value="yahoo">Yahoo Mail</option>
+            </select>
+            <label style="display: block; margin-bottom: 10px"
+              >2. Choose Mission</label
+            >
+            <select id="mail-mission">
+              <option value="newsletters">Find Newsletters & Subs</option>
+              <option value="large">Find Big Attachments (>10MB)</option>
+              <option value="old">Find Old Emails (>2 Years)</option>
+            </select>
+          </div>
+          <div
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <button id="launch-mail-btn" class="btn btn-outline">
+              Launch Cleaner
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </button>
           </div>
         </div>
