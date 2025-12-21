@@ -499,24 +499,55 @@ select:focus {
   background: var(--accent);
   color: #fff;
 }
-.theme-toggle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--nav-orb);
-  border: 1px solid var(--border);
-  color: var(--text);
-  cursor: pointer;
+/* Theme Toggle Switch - From Uiverse.io by alexruix */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
   pointer-events: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  transition: all 0.3s;
 }
-.theme-toggle:hover {
-  background: var(--text);
-  color: var(--bg);
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  --background: #28096b;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background);
+  transition: .5s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 50%;
+  left: 10%;
+  bottom: 15%;
+  box-shadow: inset 8px -4px 0px 0px #fff000;
+  background: var(--background);
+  transition: .5s;
+}
+
+input:checked + .slider {
+  background-color: #522ba7;
+}
+
+input:checked + .slider:before {
+  transform: translateX(100%);
+  box-shadow: inset 15px -4px 0px 15px #fff000;
 }
 .overlay {
   position: fixed;

@@ -15,25 +15,22 @@ document.addEventListener("DOMContentLoaded", () => {
 /* --- 1. GLOBAL UI (Theme + Menu) --- */
 function setupGlobalUI() {
   // Theme Toggle
-  const themeBtn = document.getElementById("theme-toggle");
+  const themeToggle = document.getElementById("theme-toggle");
   const body = document.body;
-  const icon = themeBtn.querySelector("i");
 
   // Load saved theme
   if (localStorage.getItem("theme") === "light") {
     body.setAttribute("data-theme", "light");
-    icon.classList.replace("fa-sun", "fa-moon");
+    themeToggle.checked = true;
   }
 
-  themeBtn.addEventListener("click", () => {
-    if (body.getAttribute("data-theme") === "light") {
-      body.removeAttribute("data-theme");
-      localStorage.setItem("theme", "dark");
-      icon.classList.replace("fa-moon", "fa-sun");
-    } else {
+  themeToggle.addEventListener("change", () => {
+    if (themeToggle.checked) {
       body.setAttribute("data-theme", "light");
       localStorage.setItem("theme", "light");
-      icon.classList.replace("fa-sun", "fa-moon");
+    } else {
+      body.removeAttribute("data-theme");
+      localStorage.setItem("theme", "dark");
     }
   });
 
@@ -368,13 +365,34 @@ function initGame() {
   let gameInterval,
     score = 0,
     temperature = 40,
-    gameActive = false;
+    gameActive = false,
+    highScore = parseInt(localStorage.getItem('liteGameHighScore')) || 0;
   const icons = [
     "fa-file-image",
     "fa-film",
     "fa-envelope",
     "fa-triangle-exclamation",
   ];
+
+  // Initialize high score display
+  updateHighScoreDisplay();
+
+  function updateHighScoreDisplay() {
+    const existingHighScoreEl = document.getElementById("game-high-score");
+    if (existingHighScoreEl) {
+      existingHighScoreEl.textContent = highScore;
+    } else {
+      // Add high score to HUD if it doesn't exist
+      const hud = document.querySelector(".hud");
+      if (hud) {
+        const highScoreEl = document.createElement("span");
+        highScoreEl.id = "game-high-score";
+        highScoreEl.innerHTML = `High Score: <b>${highScore}</b>`;
+        highScoreEl.style.color = "var(--accent)";
+        hud.appendChild(highScoreEl);
+      }
+    }
+  }
 
   if (startBtn) {
     startBtn.addEventListener("click", () => {
@@ -456,11 +474,30 @@ function initGame() {
         gameActive = false;
         clearTimeout(gameInterval);
 
+        // Check for new high score
+        let newHighScore = false;
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('liteGameHighScore', highScore.toString());
+          updateHighScoreDisplay();
+          newHighScore = true;
+        }
+
         // Play game over sound
         playSound('gameover');
 
-        gameMsg.innerHTML = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
-        startBtn.textContent = "Cooldown & Retry";
+        let message = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
+
+        if (newHighScore) {
+          message += `<br><span style="color:var(--accent); font-weight: bold; margin-top: 10px; display: block;">🎉 New High Score!</span>`;
+        }
+
+        gameMsg.innerHTML = message;
+        startBtn.innerHTML = '<span class="text">Cooldown & Retry</span>';
+        const tryAgainText = document.getElementById("try-again-text");
+        if (tryAgainText) {
+          tryAgainText.style.display = "block";
+        }
         overlay.style.display = "flex";
       }
       gameLoop();
