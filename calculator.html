@@ -19,11 +19,12 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
-      <button id="theme-toggle" class="theme-toggle">
-        <i class="fa-solid fa-sun"></i>
-      </button>
-      <button id="menu-toggle" class="menu-orb">
-        <i class="fa-solid fa-bars-staggered"></i>
+      <label class="switch" for="theme-toggle">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+      </label>
+      <button id="menu-toggle" class="menu-orb" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
       </button>
     </div>
 

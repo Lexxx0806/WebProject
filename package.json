@@ -1,7 +1,7 @@
 {
   "name": "webproject---copy",
   "version": "1.0.0",
-  "description": "\u0000",
+  "description": "A digital sustainability web app for measuring and reducing carbon emissions from internet usage",
   "main": "script.js",
   "scripts": {
     "start": "node server.js",

@@ -1,8 +1,8 @@
-# Lite - Digital Sustainability Web App
+# 🌱 Lite - Digital Sustainability Web App
 
 ## 📋 Project Overview
 
-A web application that educates users about digital carbon emissions and promotes sustainable web practices through interactive tools and gamification.
+A comprehensive web application that educates users about digital carbon emissions and promotes sustainable web practices through interactive tools, real-time analysis, and gamification.
 
 ## 🎯 Core Purpose
 
