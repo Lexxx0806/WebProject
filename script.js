@@ -54,8 +54,6 @@ function setupGlobalUI() {
       .forEach((l) => l.addEventListener("click", closeFn));
   }
 
-
-
   // Cursor
   const cursor = document.getElementById("cursor");
   document.addEventListener("mousemove", (e) => {
@@ -88,14 +86,12 @@ function setupGlobalUI() {
 
 /* --- 2. INBOX HUNTER --- */
 function initInboxHunter() {
-  const providerSel = document.getElementById("mail-provider");
-  const missionSel = document.getElementById("mail-mission");
   const btn = document.getElementById("launch-mail-btn");
 
   if (btn) {
     btn.addEventListener("click", () => {
-      const provider = providerSel.value;
-      const mission = missionSel.value;
+      const provider = window.selectedProvider || "gmail";
+      const mission = window.selectedMission || "newsletters";
       let url = "";
 
       if (provider === "gmail") {
@@ -118,6 +114,22 @@ function initInboxHunter() {
   }
 }
 
+// Global variables to store selected values
+window.selectedProvider = "gmail";
+window.selectedMission = "newsletters";
+
+function selectProvider(value, displayText) {
+  window.selectedProvider = value;
+  document.getElementById("provider-selected").textContent = displayText;
+  document.getElementById("provider-toggle").checked = false;
+}
+
+function selectMission(value, displayText) {
+  window.selectedMission = value;
+  document.getElementById("mission-selected").textContent = displayText;
+  document.getElementById("mission-toggle").checked = false;
+}
+
 /**
  * Initializes the carbon footprint calculator
  */
@@ -129,7 +141,7 @@ function initCalculator() {
   const inputs = ["gb", "stream", "email"];
 
   // Input validation
-  inputs.forEach(id => {
+  inputs.forEach((id) => {
     const input = document.getElementById(id);
     if (input) {
       input.addEventListener("input", (e) => {
@@ -143,9 +155,18 @@ function initCalculator() {
 
   if (btn) {
     btn.addEventListener("click", () => {
-      const gb = Math.max(0, parseFloat(document.getElementById("gb").value) || 0);
-      const stream = Math.max(0, parseFloat(document.getElementById("stream").value) || 0);
-      const email = Math.max(0, parseFloat(document.getElementById("email").value) || 0);
+      const gb = Math.max(
+        0,
+        parseFloat(document.getElementById("gb").value) || 0
+      );
+      const stream = Math.max(
+        0,
+        parseFloat(document.getElementById("stream").value) || 0
+      );
+      const email = Math.max(
+        0,
+        parseFloat(document.getElementById("email").value) || 0
+      );
 
       // Calculate annual carbon footprint (kg CO₂)
       // Cloud storage: 0.2 kg/GB/year
@@ -224,7 +245,47 @@ function initInspector() {
 
       checkBtn.textContent = "Scanning...";
       checkBtn.disabled = true;
-      statusMsg.innerHTML = "Connecting...";
+
+      // Show cloud loader animation
+      statusMsg.innerHTML = `
+        <div class="loader">
+          <svg viewBox="0 0 100 100">
+            <g id="cloud">
+              <rect x="20" y="60" width="60" height="25" rx="12.5" ry="12.5"/>
+              <g transform="translate(25 35)">
+                <ellipse cx="25" cy="12.5" rx="12.5" ry="12.5"/>
+                <ellipse cx="50" cy="12.5" rx="12.5" ry="12.5"/>
+                <ellipse cx="37.5" cy="6.25" rx="12.5" ry="12.5"/>
+              </g>
+              <g transform="translate(50 72.5)">
+                <rect x="-2.5" y="-2.5" width="5" height="15" rx="2.5"/>
+                <rect x="-7.5" y="-2.5" width="5" height="10" rx="2.5"/>
+                <rect x="2.5" y="-2.5" width="5" height="10" rx="2.5"/>
+                <rect x="-12.5" y="-2.5" width="5" height="5" rx="2.5"/>
+                <rect x="7.5" y="-2.5" width="5" height="5" rx="2.5"/>
+              </g>
+            </g>
+            <g id="shapes">
+              <g>
+                <g>
+                  <circle cx="50" cy="50" r="5"/>
+                  <circle cx="50" cy="50" r="5"/>
+                  <circle cx="50" cy="50" r="5"/>
+                </g>
+              </g>
+            </g>
+            <g id="lines">
+              <g>
+                <line x1="50" y1="40" x2="50" y2="60"/>
+                <line x1="35" y1="50" x2="65" y2="50"/>
+                <line x1="42" y1="35" x2="58" y2="65"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <p class="tiny-note" style="margin: 0;">Scanning website...</p>
+      `;
+
       results.style.display = "none";
       sliderGroup.style.display = "none";
       currentIsGreen = false;
@@ -267,8 +328,7 @@ function initInspector() {
           hostStatus.textContent = "Checking...";
         }
 
-        // PageSpeed API Check
-        statusMsg.innerHTML = "Measuring Page Size...";
+        // PageSpeed API Check - keep cloud loader visible
         const encodedUrl = encodeURIComponent(fullUrl);
         const psResponse = await fetch(
           `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&category=PERFORMANCE`
@@ -276,11 +336,14 @@ function initInspector() {
         if (!psResponse.ok) throw new Error("PageSpeed API blocked or failed");
 
         const psData = await psResponse.json();
-        if (!psData.lighthouseResult?.audits?.["total-byte-weight"]?.numericValue) {
+        if (
+          !psData.lighthouseResult?.audits?.["total-byte-weight"]?.numericValue
+        ) {
           throw new Error("Invalid PageSpeed response");
         }
 
-        const totalBytes = psData.lighthouseResult.audits["total-byte-weight"].numericValue;
+        const totalBytes =
+          psData.lighthouseResult.audits["total-byte-weight"].numericValue;
         detectedSize = (totalBytes / (1024 * 1024)).toFixed(2);
         usingRealData = true;
       } catch (err) {
@@ -291,10 +354,10 @@ function initInspector() {
 
       // Backend API Scan
       try {
-        const response = await fetch('/api/scan', {
-          method: 'POST',
+        const response = await fetch("/api/scan", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ url: fullUrl }),
         });
@@ -323,12 +386,15 @@ function initInspector() {
               hostStatus.textContent = "Green Energy";
               hostStatus.style.color = "var(--success)";
               hostCard.style.borderColor = "var(--success)";
-              details.innerHTML = `Hosted by: <strong>${data.hostName || "Green Partner"}</strong>`;
+              details.innerHTML = `Hosted by: <strong>${
+                data.hostName || "Green Partner"
+              }</strong>`;
             } else {
               hostStatus.textContent = "Standard Grid";
               hostStatus.style.color = "var(--text-muted)";
               hostCard.style.borderColor = "rgba(255,255,255,0.1)";
-              details.innerHTML = "Host does not provide public green evidence.";
+              details.innerHTML =
+                "Host does not provide public green evidence.";
             }
           }
         }
@@ -356,6 +422,18 @@ function initInspector() {
 
 /* --- 5. GAME --- */
 function initGame() {
+  // Initialize audio system and try to resume context
+  initAudio();
+
+  // Try to resume audio context immediately
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume().then(() => {
+      console.log('Audio context resumed');
+    }).catch(err => {
+      console.warn('Failed to resume audio context:', err);
+    });
+  }
+
   const startBtn = document.getElementById("start-game-btn");
   const gameBoard = document.getElementById("game-board");
   const overlay = document.getElementById("game-overlay");
@@ -366,7 +444,7 @@ function initGame() {
     score = 0,
     temperature = 40,
     gameActive = false,
-    highScore = parseInt(localStorage.getItem('liteGameHighScore')) || 0;
+    highScore = parseInt(localStorage.getItem("liteGameHighScore")) || 0;
   const icons = [
     "fa-file-image",
     "fa-film",
@@ -395,7 +473,18 @@ function initGame() {
   }
 
   if (startBtn) {
-    startBtn.addEventListener("click", () => {
+    startBtn.addEventListener("click", async () => {
+      // Ensure audio context is running (required for browsers)
+      if (audioContext && audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+
+      // Play start game sound
+      playSound("startgame");
+
+      // Start background music
+      startBackgroundMusic();
+
       score = 0;
       temperature = 40;
       gameActive = true;
@@ -429,13 +518,14 @@ function initGame() {
             clearInterval(fallTimer);
             if (item.parentNode) item.remove();
             temperature += 10;
+            window.currentGameTemp = temperature; // Update global for music system
             tempEl.textContent = temperature + "°C";
 
             // Progressive visual effects based on temperature
             if (temperature >= 60) {
               gameBoard.classList.add("game-heating");
               // Play warning sound for heating
-              playSound('warning');
+              playSound("warning");
             }
             if (temperature >= 80) {
               tempEl.style.color = "var(--danger)";
@@ -454,9 +544,12 @@ function initGame() {
           if (!gameActive) return;
           clearInterval(fallTimer);
           item.classList.add("popped");
-
+t
           // Create particle explosion effect
-          createParticleExplosion(item.offsetLeft + item.offsetWidth/2, item.offsetTop + item.offsetHeight/2);
+          createParticleExplosion(
+            item.offsetLeft + item.offsetWidth / 2,
+            item.offsetTop + item.offsetHeight / 2
+          );
 
           // Add screen flash effect for high scores
           if (score > 0 && score % 5 === 0) {
@@ -474,17 +567,20 @@ function initGame() {
         gameActive = false;
         clearTimeout(gameInterval);
 
+        // Stop background music
+        stopBackgroundMusic();
+
         // Check for new high score
         let newHighScore = false;
         if (score > highScore) {
           highScore = score;
-          localStorage.setItem('liteGameHighScore', highScore.toString());
+          localStorage.setItem("liteGameHighScore", highScore.toString());
           updateHighScoreDisplay();
           newHighScore = true;
         }
 
         // Play game over sound
-        playSound('gameover');
+        playSound("gameover");
 
         let message = `<span style="color:var(--danger); font-size: 1.5rem;">🔥 System Overheated!</span><br><span style="font-size:1rem;display:block;margin-top:15px;line-height:1.5;">You cleared <b>${score}</b> items.<br>Unchecked data generates massive heat.</span>`;
 
@@ -566,7 +662,7 @@ function createParticleExplosion(x, y) {
   const particleCount = 8;
 
   // Play click sound
-  playSound('click');
+  playSound("click");
 
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement("div");
@@ -596,7 +692,7 @@ function createScreenFlash() {
   const gameBoard = document.getElementById("game-board");
 
   // Play milestone sound
-  playSound('milestone');
+  playSound("milestone");
 
   gameBoard.classList.add("screen-flash");
 
@@ -605,62 +701,526 @@ function createScreenFlash() {
   }, 200);
 }
 
-// --- GAME AUDIO EFFECTS ---
-function playSound(type) {
+// --- GAME AUDIO SYSTEM ---
+let audioContext = null;
+let backgroundMusic = null;
+let isMusicPlaying = false;
+
+// Global game state for music system
+window.currentGameTemp = 40;
+
+function initAudio() {
   try {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  } catch (error) {
+    console.warn("Web Audio API not supported:", error.message);
+  }
+}
+
+function playSound(type) {
+  if (!audioContext) return;
+
+  try {
+    switch (type) {
+      case "click":
+        playClickSound();
+        break;
+      case "milestone":
+        playMilestoneSound();
+        break;
+      case "warning":
+        playWarningSound();
+        break;
+      case "gameover":
+        playGameOverSound();
+        break;
+      case "startgame":
+        playStartGameSound();
+        break;
+      case "powerup":
+        playPowerUpSound();
+        break;
+    }
+  } catch (error) {
+    console.warn("Sound playback failed:", error.message);
+  }
+}
+
+function playClickSound() {
+  // Multi-layered click with harmonics
+  const frequencies = [800, 1200, 1600];
+  const gains = [0.08, 0.04, 0.02];
+
+  frequencies.forEach((freq, index) => {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    switch(type) {
-      case 'click':
-        // Short, pleasant beep for successful clicks
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-        break;
+    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      freq * 0.7,
+      audioContext.currentTime + 0.08
+    );
 
-      case 'milestone':
-        // Celebration sound for score milestones
-        oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
-        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5
-        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2); // G5
-        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + 0.1);
-        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + 0.2);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-        break;
+    gainNode.gain.setValueAtTime(gains[index], audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + 0.08
+    );
 
-      case 'warning':
-        // Warning sound for temperature increases
-        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(250, audioContext.currentTime + 0.2);
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.4);
-        break;
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.08);
+  });
 
-      case 'gameover':
-        // Descending tone for game over
-        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.8);
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.8);
-        break;
-    }
+  // Add a subtle low-end thump
+  const bassOsc = audioContext.createOscillator();
+  const bassGain = audioContext.createGain();
+
+  bassOsc.connect(bassGain);
+  bassGain.connect(audioContext.destination);
+
+  bassOsc.frequency.setValueAtTime(120, audioContext.currentTime);
+  bassGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+  bassGain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioContext.currentTime + 0.1
+  );
+
+  bassOsc.start(audioContext.currentTime);
+  bassOsc.stop(audioContext.currentTime + 0.1);
+}
+
+function playMilestoneSound() {
+  // Triumphant arpeggio with multiple voices
+  const notes = [
+    { freq: 523, time: 0 }, // C5
+    { freq: 659, time: 0.08 }, // E5
+    { freq: 784, time: 0.16 }, // G5
+    { freq: 1047, time: 0.24 }, // C6
+    { freq: 1319, time: 0.32 }, // E6
+    { freq: 1568, time: 0.4 }, // G6
+  ];
+
+  notes.forEach((note) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(
+      note.freq,
+      audioContext.currentTime + note.time
+    );
+    gainNode.gain.setValueAtTime(0.12, audioContext.currentTime + note.time);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + note.time + 0.15
+    );
+
+    oscillator.start(audioContext.currentTime + note.time);
+    oscillator.stop(audioContext.currentTime + note.time + 0.15);
+  });
+}
+
+function playWarningSound() {
+  // Tense, pulsing warning tone
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  const filterNode = audioContext.createBiquadFilter();
+
+  oscillator.connect(filterNode);
+  filterNode.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  filterNode.type = "lowpass";
+  filterNode.frequency.setValueAtTime(800, audioContext.currentTime);
+  filterNode.frequency.exponentialRampToValueAtTime(
+    200,
+    audioContext.currentTime + 0.5
+  );
+
+  oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(280, audioContext.currentTime + 0.15);
+  oscillator.frequency.setValueAtTime(320, audioContext.currentTime + 0.3);
+
+  gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioContext.currentTime + 0.5
+  );
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.5);
+}
+
+function playGameOverSound() {
+  // Dramatic descending sequence
+  const notes = [
+    { freq: 440, duration: 0.3 }, // A4
+    { freq: 392, duration: 0.3 }, // G4
+    { freq: 349, duration: 0.3 }, // F4
+    { freq: 294, duration: 0.4 }, // D4
+    { freq: 262, duration: 0.6 }, // C4
+  ];
+
+  let currentTime = audioContext.currentTime;
+
+  notes.forEach((note) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(note.freq, currentTime);
+    gainNode.gain.setValueAtTime(0.2, currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      currentTime + note.duration
+    );
+
+    oscillator.start(currentTime);
+    oscillator.stop(currentTime + note.duration);
+
+    currentTime += note.duration * 0.8; // Slight overlap
+  });
+}
+
+function playStartGameSound() {
+  // Energetic startup sequence
+  const sequence = [
+    { freq: 523, time: 0, duration: 0.1 }, // C5
+    { freq: 659, time: 0.1, duration: 0.1 }, // E5
+    { freq: 784, time: 0.2, duration: 0.2 }, // G5
+  ];
+
+  sequence.forEach((note) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(
+      note.freq,
+      audioContext.currentTime + note.time
+    );
+    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + note.time);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + note.time + note.duration
+    );
+
+    oscillator.start(audioContext.currentTime + note.time);
+    oscillator.stop(audioContext.currentTime + note.time + note.duration);
+  });
+}
+
+function playPowerUpSound() {
+  // Magical ascending sparkle
+  const sparkle = [
+    { freq: 1000, time: 0 },
+    { freq: 1200, time: 0.05 },
+    { freq: 1400, time: 0.1 },
+    { freq: 1600, time: 0.15 },
+    { freq: 1800, time: 0.2 },
+  ];
+
+  sparkle.forEach((note) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(
+      note.freq,
+      audioContext.currentTime + note.time
+    );
+    gainNode.gain.setValueAtTime(0.06, audioContext.currentTime + note.time);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + note.time + 0.08
+    );
+
+    oscillator.start(audioContext.currentTime + note.time);
+    oscillator.stop(audioContext.currentTime + note.time + 0.08);
+  });
+}
+
+function startBackgroundMusic() {
+  if (!audioContext || isMusicPlaying) return;
+
+  try {
+    // Start the 1-minute looping background music
+    backgroundMusic = createSimpleMusicLoop();
+    isMusicPlaying = true;
+    console.log('Background music started successfully');
   } catch (error) {
-    // Silently fail if Web Audio API is not supported
-    console.warn('Audio not supported:', error.message);
+    console.warn('Background music failed:', error.message);
+    // Fallback to even simpler music
+    try {
+      backgroundMusic = createBasicMusicLoop();
+      isMusicPlaying = true;
+      console.log('Fallback music started');
+    } catch (fallbackError) {
+      console.warn('Fallback music also failed:', fallbackError.message);
+    }
   }
+}
+
+function stopBackgroundMusic() {
+  if (backgroundMusic) {
+    backgroundMusic.stop();
+    backgroundMusic = null;
+    isMusicPlaying = false;
+  }
+}
+
+function createSimpleMusicLoop() {
+  // Create a 1-minute chiptune loop with multiple sections
+  const sections = [
+    // Intro - 15 seconds
+    {
+      name: 'intro',
+      duration: 15,
+      pattern: [
+        // Gentle opening
+        { note: 'C4', duration: 0.5, velocity: 0.03 },
+        { note: 'E4', duration: 0.5, velocity: 0.03 },
+        { note: 'G4', duration: 0.5, velocity: 0.025 },
+        { note: 'C5', duration: 1.0, velocity: 0.025 },
+        { note: 'G4', duration: 0.5, velocity: 0.03 },
+        { note: 'E4', duration: 0.5, velocity: 0.03 },
+        { note: 'C4', duration: 1.5, velocity: 0.025 },
+        // Build up
+        { note: 'D4', duration: 0.4, velocity: 0.035 },
+        { note: 'F4', duration: 0.4, velocity: 0.035 },
+        { note: 'A4', duration: 0.6, velocity: 0.03 },
+        { note: 'D5', duration: 0.8, velocity: 0.03 },
+        { note: 'A4', duration: 0.4, velocity: 0.035 },
+        { note: 'F4', duration: 0.4, velocity: 0.035 },
+        { note: 'D4', duration: 1.2, velocity: 0.03 }
+      ]
+    },
+    // Main theme - 20 seconds
+    {
+      name: 'main',
+      duration: 20,
+      pattern: [
+        // Catchy melody
+        { note: 'E4', duration: 0.3, velocity: 0.04 },
+        { note: 'G4', duration: 0.3, velocity: 0.04 },
+        { note: 'B4', duration: 0.4, velocity: 0.035 },
+        { note: 'E5', duration: 0.6, velocity: 0.035 },
+        { note: 'B4', duration: 0.3, velocity: 0.04 },
+        { note: 'G4', duration: 0.3, velocity: 0.04 },
+        { note: 'E4', duration: 0.8, velocity: 0.035 },
+        // Variation
+        { note: 'F4', duration: 0.25, velocity: 0.045 },
+        { note: 'A4', duration: 0.25, velocity: 0.045 },
+        { note: 'C5', duration: 0.25, velocity: 0.04 },
+        { note: 'F5', duration: 0.5, velocity: 0.04 },
+        { note: 'C5', duration: 0.25, velocity: 0.045 },
+        { note: 'A4', duration: 0.25, velocity: 0.045 },
+        { note: 'F4', duration: 0.65, velocity: 0.04 },
+        // Bridge
+        { note: 'G4', duration: 0.35, velocity: 0.04 },
+        { note: 'B4', duration: 0.35, velocity: 0.04 },
+        { note: 'D5', duration: 0.35, velocity: 0.035 },
+        { note: 'G5', duration: 0.7, velocity: 0.035 },
+        { note: 'D5', duration: 0.35, velocity: 0.04 },
+        { note: 'B4', duration: 0.35, velocity: 0.04 },
+        { note: 'G4', duration: 0.9, velocity: 0.035 }
+      ]
+    },
+    // Build tension - 15 seconds
+    {
+      name: 'build',
+      duration: 15,
+      pattern: [
+        // Increasing intensity
+        { note: 'A4', duration: 0.2, velocity: 0.045 },
+        { note: 'C5', duration: 0.2, velocity: 0.045 },
+        { note: 'E5', duration: 0.3, velocity: 0.04 },
+        { note: 'A5', duration: 0.5, velocity: 0.04 },
+        { note: 'E5', duration: 0.2, velocity: 0.045 },
+        { note: 'C5', duration: 0.2, velocity: 0.045 },
+        { note: 'A4', duration: 0.6, velocity: 0.04 },
+        // Faster rhythm
+        { note: 'B4', duration: 0.15, velocity: 0.05 },
+        { note: 'D5', duration: 0.15, velocity: 0.05 },
+        { note: 'F5', duration: 0.2, velocity: 0.045 },
+        { note: 'B5', duration: 0.4, velocity: 0.045 },
+        { note: 'F5', duration: 0.15, velocity: 0.05 },
+        { note: 'D5', duration: 0.15, velocity: 0.05 },
+        { note: 'B4', duration: 0.5, velocity: 0.045 }
+      ]
+    },
+    // Climax & resolution - 10 seconds
+    {
+      name: 'climax',
+      duration: 10,
+      pattern: [
+        // Powerful climax
+        { note: 'C5', duration: 0.1, velocity: 0.06 },
+        { note: 'E5', duration: 0.1, velocity: 0.06 },
+        { note: 'G5', duration: 0.15, velocity: 0.055 },
+        { note: 'C6', duration: 0.25, velocity: 0.055 },
+        { note: 'G5', duration: 0.1, velocity: 0.06 },
+        { note: 'E5', duration: 0.1, velocity: 0.06 },
+        { note: 'C5', duration: 0.29, velocity: 0.055 },
+        // Resolution
+        { note: 'F4', duration: 0.3, velocity: 0.04 },
+        { note: 'A4', duration: 0.3, velocity: 0.04 },
+        { note: 'C5', duration: 0.4, velocity: 0.035 },
+        { note: 'F5', duration: 0.6, velocity: 0.035 },
+        { note: 'C5', duration: 0.3, velocity: 0.04 },
+        { note: 'A4', duration: 0.3, velocity: 0.04 },
+        { note: 'F4', duration: 0.8, velocity: 0.035 }
+      ]
+    }
+  ];
+
+  const noteFreq = {
+    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+    'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25,
+    'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99,
+    'A5': 880.00, 'B5': 987.77, 'C6': 1046.50
+  };
+
+  let loopCount = 0;
+
+  function playSection(sectionIndex = 0) {
+    if (!isMusicPlaying) return;
+
+    const section = sections[sectionIndex];
+    let sectionStartTime = audioContext.currentTime;
+    let patternIndex = 0;
+
+    function playNextNoteInSection() {
+      if (!isMusicPlaying) return;
+
+      if (patternIndex >= section.pattern.length) {
+        // Section complete, move to next section or loop
+        const nextSectionIndex = (sectionIndex + 1) % sections.length;
+        if (nextSectionIndex === 0) loopCount++;
+
+        // Small pause between sections (0.2 seconds)
+        setTimeout(() => playSection(nextSectionIndex), 200);
+        return;
+      }
+
+      const noteData = section.pattern[patternIndex];
+      const noteTime = sectionStartTime + section.pattern.slice(0, patternIndex)
+        .reduce((sum, note) => sum + note.duration, 0);
+
+      // Create main melody oscillator
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.setValueAtTime(noteFreq[noteData.note], noteTime);
+      oscillator.type = 'square';
+
+      gainNode.gain.setValueAtTime(noteData.velocity, noteTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, noteTime + noteData.duration * 0.8);
+
+      oscillator.start(noteTime);
+      oscillator.stop(noteTime + noteData.duration);
+
+      // Add subtle harmony for richness
+      if (patternIndex % 3 === 0) { // Every third note
+        const harmonyOsc = audioContext.createOscillator();
+        const harmonyGain = audioContext.createGain();
+
+        harmonyOsc.connect(harmonyGain);
+        harmonyGain.connect(audioContext.destination);
+
+        harmonyOsc.frequency.setValueAtTime(noteFreq[noteData.note] * 1.25, noteTime);
+        harmonyOsc.type = 'sine';
+
+        harmonyGain.gain.setValueAtTime(noteData.velocity * 0.15, noteTime);
+        harmonyGain.gain.exponentialRampToValueAtTime(0.001, noteTime + noteData.duration * 0.6);
+
+        harmonyOsc.start(noteTime);
+        harmonyOsc.stop(noteTime + noteData.duration);
+      }
+
+      patternIndex++;
+      // Schedule next note quickly
+      setTimeout(playNextNoteInSection, 5);
+    }
+
+    playNextNoteInSection();
+  }
+
+  // Start with intro section
+  playSection(0);
+
+  return {
+    stop: () => {
+      isMusicPlaying = false;
+    }
+  };
+}
+
+function createBasicMusicLoop() {
+  // Simple fallback melody if the complex one fails
+  const melody = [
+    { note: 'C4', duration: 0.5 },
+    { note: 'E4', duration: 0.5 },
+    { note: 'G4', duration: 0.5 },
+    { note: 'C5', duration: 0.5 },
+    { note: 'G4', duration: 0.5 },
+    { note: 'E4', duration: 0.5 },
+    { note: 'C4', duration: 1.0 }
+  ];
+
+  const noteFreq = {
+    'C4': 261.63, 'E4': 329.63, 'G4': 392.00, 'C5': 523.25
+  };
+
+  function playMelody() {
+    if (!isMusicPlaying) return;
+
+    let currentTime = audioContext.currentTime;
+
+    melody.forEach(noteData => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.setValueAtTime(noteFreq[noteData.note], currentTime);
+      oscillator.type = 'square';
+
+      gainNode.gain.setValueAtTime(0.03, currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + noteData.duration * 0.8);
+
+      oscillator.start(currentTime);
+      oscillator.stop(currentTime + noteData.duration);
+
+      currentTime += noteData.duration;
+    });
+
+    // Loop every 4 seconds
+    if (isMusicPlaying) {
+      setTimeout(playMelody, 4000);
+    }
+  }
+
+  playMelody();
+
+  return {
+    stop: () => {
+      isMusicPlaying = false;
+    }
+  };
 }

@@ -20,10 +20,14 @@
 
     <div class="menu-wrapper">
       <label class="switch" for="theme-toggle">
-        <input type="checkbox" id="theme-toggle">
+        <input type="checkbox" id="theme-toggle" />
         <span class="slider"></span>
       </label>
-      <button id="menu-toggle" class="menu-orb" aria-label="Open navigation menu">
+      <button
+        id="menu-toggle"
+        class="menu-orb"
+        aria-label="Open navigation menu"
+      >
         <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
       </button>
     </div>
@@ -56,6 +60,9 @@
     <main class="container">
       <section class="card reveal active" style="margin-top: 60px">
         <div class="card-header">
+          <div style="text-align: center; margin-bottom: 15px;">
+            <i class="fa-solid fa-calculator accent" style="font-size: 2.5rem;"></i>
+          </div>
           <h2>Impact Estimator</h2>
           <p>Enter your weekly habits to see your annual footprint.</p>
         </div>
@@ -113,19 +120,80 @@
             <label style="display: block; margin-bottom: 10px"
               >1. Choose Provider</label
             >
-            <select id="mail-provider" style="margin-bottom: 20px">
-              <option value="gmail">Gmail</option>
-              <option value="outlook">Outlook / Hotmail</option>
-              <option value="yahoo">Yahoo Mail</option>
-            </select>
+            <div class="dropdown" style="margin-bottom: 20px">
+              <input type="checkbox" id="provider-toggle" class="sr-only" />
+              <div
+                class="trigger"
+                onclick="document.getElementById('provider-toggle').click();"
+              >
+                <span id="provider-selected">Gmail</span>
+              </div>
+              <ul class="list">
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectProvider('gmail', 'Gmail')"
+                  >
+                    Gmail
+                  </div>
+                </li>
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectProvider('outlook', 'Outlook / Hotmail')"
+                  >
+                    Outlook / Hotmail
+                  </div>
+                </li>
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectProvider('yahoo', 'Yahoo Mail')"
+                  >
+                    Yahoo Mail
+                  </div>
+                </li>
+              </ul>
+            </div>
+
             <label style="display: block; margin-bottom: 10px"
               >2. Choose Mission</label
             >
-            <select id="mail-mission">
-              <option value="newsletters">Find Newsletters & Subs</option>
-              <option value="large">Find Big Attachments (>10MB)</option>
-              <option value="old">Find Old Emails (>2 Years)</option>
-            </select>
+            <div class="dropdown">
+              <input type="checkbox" id="mission-toggle" class="sr-only" />
+              <div
+                class="trigger"
+                onclick="document.getElementById('mission-toggle').click();"
+              >
+                <span id="mission-selected">Find Newsletters</span>
+              </div>
+              <ul class="list">
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectMission('newsletters', 'Find Newsletters & Subs')"
+                  >
+                    Find Newsletters & Subs
+                  </div>
+                </li>
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectMission('large', 'Find Big Attachments (>10MB)')"
+                  >
+                    Find Big Attachments (>10MB)
+                  </div>
+                </li>
+                <li class="listitem">
+                  <div
+                    class="article"
+                    onclick="selectMission('old', 'Find Old Emails (>2 Years)')"
+                  >
+                    Find Old Emails (>2 Years)
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
           <div
             style="display: flex; align-items: center; justify-content: center"
@@ -141,7 +209,9 @@
       <section class="reveal" style="margin-top: 60px">
         <div class="grid">
           <div class="card">
-            <h2><i class="fa-solid fa-chart-bar accent"></i> Emission Breakdown</h2>
+            <h2>
+              <i class="fa-solid fa-chart-bar accent"></i> Emission Breakdown
+            </h2>
             <p>Understanding where your digital carbon footprint comes from.</p>
             <div class="emission-breakdown">
               <div class="emission-item">
@@ -168,32 +238,51 @@
           </div>
 
           <div class="card">
-            <h2><i class="fa-solid fa-seedling accent"></i> Carbon Offsetting</h2>
-            <p>Balance unavoidable emissions with verified carbon removal projects.</p>
+            <h2>
+              <i class="fa-solid fa-seedling accent"></i> Carbon Offsetting
+            </h2>
+            <p>
+              Balance unavoidable emissions with verified carbon removal
+              projects.
+            </p>
             <div class="offsetting-options">
               <div class="offset-item">
-                <strong>🌳 Reforestation:</strong> Plant trees in deforested areas to capture CO₂.
+                <strong>🌳 Reforestation:</strong> Plant trees in deforested
+                areas to capture CO₂.
               </div>
               <div class="offset-item">
-                <strong>🏭 Renewable Energy:</strong> Fund wind and solar projects to replace fossil fuels.
+                <strong>🏭 Renewable Energy:</strong> Fund wind and solar
+                projects to replace fossil fuels.
               </div>
               <div class="offset-item">
-                <strong>💨 Direct Air Capture:</strong> Technology that removes CO₂ from the atmosphere.
+                <strong>💨 Direct Air Capture:</strong> Technology that removes
+                CO₂ from the atmosphere.
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="card reveal" style="margin-top: 60px; text-align: center;">
+      <section class="card reveal" style="margin-top: 60px; text-align: center">
         <h2><i class="fa-solid fa-users accent"></i> Compare Your Impact</h2>
-        <p style="font-size: 1.1rem; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
-          See how your digital habits stack up against global averages and best practices.
+        <p
+          style="
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          See how your digital habits stack up against global averages and best
+          practices.
         </p>
         <div class="comparison-grid">
           <div class="comparison-card">
             <h4>Your Usage</h4>
-            <div class="comparison-value" id="user-comparison">Calculate above to see</div>
+            <div class="comparison-value" id="user-comparison">
+              Calculate above to see
+            </div>
             <small>Annual CO₂ emissions</small>
           </div>
           <div class="comparison-card">

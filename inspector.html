@@ -56,6 +56,9 @@
     <main class="container">
       <section class="card reveal active" style="margin-top: 60px">
         <div class="card-header">
+          <div style="text-align: center; margin-bottom: 15px;">
+            <i class="fa-solid fa-search accent" style="font-size: 2.5rem;"></i>
+          </div>
           <h2>
             <i class="fa-solid fa-magnifying-glass-chart accent"></i> Live
             Carbon Audit
@@ -99,9 +102,11 @@
               value="2.2"
             />
           </div>
-          <p class="tiny-note" id="status-msg" style="margin-top: 15px">
-            Ready to scan.
-          </p>
+          <div id="status-msg" style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+            <p class="tiny-note" style="margin: 0;">
+              Ready to scan.
+            </p>
+          </div>
         </div>
 
         <div id="inspector-results" class="inspector-results">
