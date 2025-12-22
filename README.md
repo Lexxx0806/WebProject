@@ -2,7 +2,7 @@
 
 ## 📋 Project Overview
 
-A comprehensive web application that educates users about digital carbon emissions and promotes sustainable web practices through interactive tools, real-time analysis, and gamification.
+A comprehensive web application that educates users about digital carbon emissions and promotes sustainable web practices through interactive tools, real-time analysis, gamification, and immersive visual experiences. Features dual animated theme backgrounds that enhance the user experience while maintaining focus on environmental education.
 
 ## 🎯 Core Purpose
 
@@ -11,6 +11,8 @@ Lite helps users understand and reduce their digital carbon footprint through:
 - **Web Inspector**: Audit websites for environmental impact
 - **Interactive Game**: Learn about data cleanup through gameplay
 - **Educational Content**: Awareness about internet's environmental impact
+- **AI Sustainability Assistant**: Intelligent chatbot for instant guidance
+- **Dual Theme System**: Animated backgrounds for immersive experience
 
 ## 🛠️ Technical Stack
 
@@ -137,6 +139,12 @@ Scans a website for carbon emissions and hosting sustainability.
 - **Inputs**: Consistent styling with focus states
 - **Animations**: Smooth transitions, reveal effects
 
+### Animated Backgrounds
+- **Dark Theme**: Twinkling starfield with drifting constellations
+- **Light Theme**: Underwater ocean scene with sun, clouds, fish, and waves
+- **Theme Persistence**: User preferences saved in localStorage
+- **Performance Optimized**: CSS-only animations with 60fps smoothness
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -215,12 +223,18 @@ WebProject/
 
 ## 🔧 Recent Updates
 
-- ✅ Fixed menu toggle button functionality
-- ✅ Added game CSS and click interactions
-- ✅ Enhanced server security and validation
-- ✅ Improved code documentation and comments
-- ✅ Added accessibility attributes
-- ✅ Performance optimizations
+- ✅ **Dual Theme System**: Animated backgrounds - starfield for dark mode, ocean scene for light mode
+- ✅ **AI Sustainability Chatbot**: Intelligent assistant providing instant guidance
+- ✅ **Enhanced Theme Persistence**: User preferences saved across sessions
+- ✅ **Ocean Scene Animation**: Sun, clouds, fish, waves, and underwater elements
+- ✅ **Starfield Animation**: Twinkling stars with drifting constellations
+- ✅ **Settings Panel**: Universal theme toggle on all pages
+- ✅ **Audio Experience**: Web Audio API with game soundtrack and sound effects
+- ✅ **Advanced Animations**: Smooth transitions and reveal effects
+- ✅ **Accessibility Improvements**: ARIA labels, keyboard navigation, WCAG compliance
+- ✅ **Performance Optimizations**: 60fps animations with no performance impact
+- ✅ **Cross-Page Consistency**: Unified UI elements across all modules
+- ✅ **Real-time Theme Switching**: Instant background transitions
 
 ## 🌐 Browser Support
 

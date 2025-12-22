@@ -21,20 +21,29 @@ function setupGlobalUI() {
   // Load saved theme
   if (localStorage.getItem("theme") === "light") {
     body.setAttribute("data-theme", "light");
+    body.classList.remove("dark-stars");
+    body.classList.add("light-sunbeams");
     themeToggle.checked = true;
+  } else {
+    body.classList.add("dark-stars");
+    body.classList.remove("light-sunbeams");
   }
 
   themeToggle.addEventListener("change", () => {
     if (themeToggle.checked) {
       body.setAttribute("data-theme", "light");
+      body.classList.remove("dark-stars");
+      body.classList.add("light-sunbeams");
       localStorage.setItem("theme", "light");
     } else {
       body.removeAttribute("data-theme");
+      body.classList.add("dark-stars");
+      body.classList.remove("light-sunbeams");
       localStorage.setItem("theme", "dark");
     }
   });
 
-  // Menu
+  // Menu functionality
   const menuToggle = document.getElementById("menu-toggle");
   const menuOverlay = document.getElementById("menu-overlay");
 
@@ -91,6 +100,33 @@ function setupGlobalUI() {
     });
   }
 
+  // Chatbot Widget
+  const chatbotWidget = document.getElementById("chatbot-widget");
+  const chatbotToggle = document.getElementById("chatbot-toggle");
+  const chatbotClose = document.getElementById("chatbot-close");
+
+  if (chatbotToggle && chatbotWidget) {
+    chatbotToggle.addEventListener("click", () => {
+      chatbotWidget.classList.toggle("active");
+    });
+
+    if (chatbotClose) {
+      chatbotClose.addEventListener("click", () => {
+        chatbotWidget.classList.remove("active");
+      });
+    }
+
+    // Close chatbot when clicking outside
+    document.addEventListener("click", (e) => {
+      if (
+        !chatbotWidget.contains(e.target) &&
+        !chatbotToggle.contains(e.target)
+      ) {
+        chatbotWidget.classList.remove("active");
+      }
+    });
+  }
+
   // Custom cursor disabled - using default browser cursor for better compatibility
   // This prevents conflicts with menu overlays and ensures smooth interaction
 
@@ -106,8 +142,12 @@ function setupGlobalUI() {
     },
     { threshold: 0.1 }
   );
-  document.querySelectorAll(".reveal").forEach((el) => scrollObserver.observe(el));
+  document
+    .querySelectorAll(".reveal")
+    .forEach((el) => scrollObserver.observe(el));
 }
+
+
 
 /* --- 2. INBOX HUNTER --- */
 function initInboxHunter() {
@@ -157,9 +197,14 @@ function selectMission(value, displayText) {
 
 // Chatbot functionality
 function handleChatKeyPress(event) {
-  if (event.key === 'Enter') {
+  if (event.key === "Enter") {
     sendChatMessage();
   }
+}
+
+function askQuickQuestion(question) {
+  document.getElementById("chatbot-input").value = question;
+  sendChatMessage();
 }
 
 function sendChatMessage() {
@@ -199,54 +244,134 @@ function sendChatMessage() {
 function generateChatResponse(message) {
   const lowerMessage = message.toLowerCase();
 
-  // Simple keyword-based responses (in a real app, this would use AI)
-  if (lowerMessage.includes('carbon') || lowerMessage.includes('co2') || lowerMessage.includes('emissions')) {
-    return "Digital carbon emissions come from data centers, network infrastructure, and device manufacturing. The internet accounts for about 3.7% of global greenhouse gas emissions - that's comparable to the aviation industry!";
+  // Helper functions for better matching
+  const containsAny = (wordList) =>
+    wordList.some((word) => lowerMessage.includes(word));
+  const startsWithQuestion = () =>
+    containsAny([
+      "what", "how", "why", "when", "where", "who", "which", "tell me", "explain", "can you"
+    ]);
+
+  // Chatbot responses - simplified to English only
+  const responses = {
+    emissions: "Digital carbon emissions come from data centers (servers), network infrastructure (cables, routers), and device manufacturing. The internet accounts for about 3.7% of global greenhouse gas emissions - that's comparable to the aviation industry!",
+    calculator: "Our carbon calculator uses industry-standard formulas from Sustainable Web Design. It estimates your annual digital footprint based on cloud storage (0.2kg CO₂/GB/year), streaming (0.055kg CO₂/hour), and email usage (0.004kg CO₂/email). The results show both CO₂ emissions and equivalent tree absorption requirements.",
+    greenHosting: "Green hosting providers power their servers with 100% renewable energy. They typically use about 50g CO₂ per kWh compared to 442g for coal-powered hosting. Our web inspector can help you check if a site uses green hosting - look for providers like Google Cloud, AWS, or certified green hosts!",
+    darkMode: "Dark mode can save significant energy on OLED screens! Studies show it can reduce power consumption by up to 60% on certain devices. It's one of the simplest ways to reduce your digital carbon footprint while also being easier on the eyes.",
+    actions: "Great question! Here are effective ways to reduce your digital carbon footprint: 1) Use dark mode on OLED screens, 2) Delete unused cloud storage files, 3) Unsubscribe from newsletters and clean email, 4) Choose lower video quality when streaming, 5) Use green hosting providers, 6) Regularly audit and optimize websites, 7) Extend device lifespan, and 8) Download rather than stream repeatedly.",
+    game: "The Data Stream Defense game teaches about digital waste through gameplay. Each falling 'data item' represents files that consume server energy. The higher your temperature goes, the more energy is being wasted - just like in real data centers! Try to clear as many items as possible before overheating.",
+    email: "Email storage is a major contributor to digital emissions. Gmail alone stores over 1.5 petabytes of data! Our Inbox Hunter tool helps you find and delete old emails, newsletters, and large attachments. Unsubscribing from unused newsletters can save significant storage space and energy.",
+    video: "Video streaming accounts for about 60% of internet traffic and energy use. 480p video uses 60% less data than 4K, and choosing lower video quality can significantly reduce your carbon footprint while still enjoying content. Consider downloading content when possible instead of streaming repeatedly.",
+    cloud: "Cloud storage might seem 'invisible' but it consumes massive amounts of energy. 90% of created data is never accessed again, yet it still requires power for storage and backup systems. Regular cleanup is essential - delete unused files, empty trash, and consider local storage for frequently accessed content.",
+    website: "Our web inspector analyzes websites for environmental impact. It checks page size, hosting provider (green vs fossil fuel), and provides an eco-grade (A+ to F). Smaller, efficiently-hosted sites have much lower carbon footprints. Try scanning popular websites to see how they compare!",
+    importance: "Digital sustainability is crucial because the internet now accounts for 3.7% of global greenhouse gas emissions - more than the entire aviation industry! Every digital action has an environmental cost, from data centers to device manufacturing. Small changes can collectively make a big difference in reducing our global carbon footprint.",
+    statistics: "Some key digital sustainability statistics: 📊 Internet uses 3.7% of global emissions (more than aviation), 💾 90% of stored data is never accessed again, 📧 Gmail stores 1.5 petabytes, 🎥 Video streaming uses 60% of internet traffic, 🌱 Green hosting uses 50g CO₂/kWh vs 442g for coal. Our calculator can help you understand your personal impact!",
+    future: "The future of digital sustainability looks promising! AI optimization can reduce data center energy by 40%, edge computing brings processing closer to users, renewable energy is becoming cheaper than fossil fuels, and carbon-aware computing automatically routes to cleaner energy sources. We're moving toward a more efficient, sustainable internet!",
+    greetings: [
+      "Hello! I'm your digital sustainability assistant. I can help you understand carbon emissions, use our calculator, or answer questions about reducing your digital footprint. What would you like to know?",
+      "Hi there! Ready to learn about digital sustainability? I can explain emissions, help with our tools, or share tips for reducing your environmental impact. What's on your mind?",
+      "Greetings! I'm here to help you navigate the world of digital sustainability. Whether it's understanding emissions, using our calculator, or learning about green hosting, I'm here to assist. What would you like to explore?"
+    ],
+    thanks: [
+      "You're welcome! Every step toward digital sustainability matters. Feel free to ask me anything else about reducing your carbon footprint!",
+      "Happy to help! Digital sustainability is important, and I'm glad I could assist. Check back anytime for more tips and information.",
+      "My pleasure! Remember, small digital changes can have big environmental impacts. Don't hesitate to ask if you have more questions!"
+    ],
+    goodbye: "Goodbye! Remember to keep your digital footprint light. Check back anytime for more sustainability tips!",
+    help: "I can help you with: 🌱 Carbon emissions explanations, 🧮 Calculator usage, 🎮 Game instructions, 📧 Email cleanup tips, 🎥 Streaming optimization, ☁️ Cloud storage advice, 🌐 Website auditing, 🏠 Green hosting info, and general digital sustainability questions. What would you like to know about?",
+    fallbacks: [
+      "That's an interesting question about digital sustainability! While I specialize in carbon emissions, calculators, and digital tools, I can help you understand the environmental impact of technology. What specific aspect interests you?",
+      "I focus on digital sustainability topics like carbon emissions, green hosting, energy-efficient practices, and our calculator tools. I'd be happy to help you learn about any of these areas!",
+      "While I don't have information on that specific topic, I can definitely help you with questions about digital carbon emissions, sustainable web practices, or how to reduce your digital environmental footprint. What would you like to explore?",
+      "I'm designed to help with digital sustainability questions. I can explain carbon emissions, help with our calculator, share tips for reducing your digital footprint, or answer questions about green technology. What would you like to know?",
+      "That's outside my expertise in digital sustainability, but I'd love to help you understand the environmental impact of the internet, data centers, or digital habits. What digital sustainability topic interests you?"
+    ]
+  };
+
+  // Exact question matching first (highest priority)
+  if (lowerMessage.includes("what are digital emissions") ||
+      lowerMessage.includes("what are carbon emissions")) {
+    return responses.emissions;
   }
 
-  if (lowerMessage.includes('calculator') || lowerMessage.includes('calculate')) {
-    return "Our carbon calculator uses industry-standard formulas from Sustainable Web Design. It estimates your annual digital footprint based on cloud storage, streaming, and email usage. The results show both CO₂ emissions and equivalent tree absorption requirements.";
+  if (lowerMessage.includes("how does the calculator work") ||
+      lowerMessage.includes("what does the calculator do")) {
+    return responses.calculator;
   }
 
-  if (lowerMessage.includes('dark mode') || lowerMessage.includes('energy')) {
-    return "Dark mode can save significant energy on OLED screens! Studies show it can reduce power consumption by up to 60% on certain devices. It's one of the simplest ways to reduce your digital carbon footprint.";
+  if (lowerMessage.includes("what is green hosting") ||
+      lowerMessage.includes("tell me about green hosting")) {
+    return responses.greenHosting;
   }
 
-  if (lowerMessage.includes('hosting') || lowerMessage.includes('green')) {
-    return "Green hosting providers power their servers with 100% renewable energy. They typically use about 50g CO₂ per kWh compared to 442g for coal-powered hosting. Our web inspector can help you check if a site uses green hosting!";
+  if (lowerMessage.includes("how does dark mode save energy")) {
+    return responses.darkMode;
   }
 
-  if (lowerMessage.includes('game') || lowerMessage.includes('simulation')) {
-    return "The Data Stream Defense game teaches about digital waste through gameplay. Each 'data item' represents files that consume server energy. The higher your temperature goes, the more energy is being wasted - just like in real data centers!";
+  if (lowerMessage.includes("what can i do") ||
+      lowerMessage.includes("how to reduce") ||
+      lowerMessage.includes("how can i")) {
+    return responses.actions;
   }
 
-  if (lowerMessage.includes('email') || lowerMessage.includes('gmail')) {
-    return "Email storage is a major contributor to digital emissions. Gmail alone stores over 1.5 petabytes of data! Our Inbox Hunter tool helps you find and delete old emails, newsletters, and large attachments to reduce your footprint.";
+  // Topic-based matching (medium priority)
+  if (containsAny(["calculator", "calculate", "compute"]) && startsWithQuestion()) {
+    return responses.calculator;
   }
 
-  if (lowerMessage.includes('video') || lowerMessage.includes('streaming')) {
-    return "Video streaming is one of the largest sources of digital emissions. 480p video uses about 60% less data than 4K, and choosing lower quality can significantly reduce your carbon footprint while still enjoying content.";
-
+  if (containsAny(["game", "simulation", "play"]) && startsWithQuestion()) {
+    return responses.game;
   }
 
-  if (lowerMessage.includes('cloud') || lowerMessage.includes('storage')) {
-    return "Cloud storage might seem 'invisible' but it consumes massive amounts of energy. 90% of created data is never accessed again, yet it still requires power for storage and backup systems. Regular cleanup is essential!";
+  if (containsAny(["email", "gmail", "inbox", "newsletter"]) && startsWithQuestion()) {
+    return responses.email;
   }
 
-  if (lowerMessage.includes('website') || lowerMessage.includes('audit')) {
-    return "Our web inspector analyzes websites for environmental impact. It checks page size, hosting provider (green vs fossil fuel), and provides an eco-grade. Smaller, efficiently-hosted sites have much lower carbon footprints!";
+  if (containsAny(["video", "streaming", "netflix", "youtube"]) && startsWithQuestion()) {
+    return responses.video;
   }
 
-  // Default responses for general questions
-  const generalResponses = [
-    "That's a great question about digital sustainability! The internet's environmental impact is often overlooked, but it accounts for about 3.7% of global emissions - more than the entire aviation industry.",
-    "Digital emissions come from data centers (servers), network infrastructure (cables, routers), and device manufacturing. Every email, video, or website visit has a carbon cost.",
-    "Small actions add up! Using dark mode, deleting old files, choosing green hosting, and reducing video quality are all simple ways to reduce your digital carbon footprint.",
-    "Our calculator estimates your annual digital emissions based on your cloud storage, streaming habits, and email usage. It's based on industry research from organizations like the Green Web Foundation.",
-    "The Data Stream Defense game illustrates how digital waste accumulates. Each falling item represents data that consumes server energy - the temperature shows how 'hot' your digital footprint is getting!"
-  ];
+  if (containsAny(["cloud", "storage", "drive"]) && startsWithQuestion()) {
+    return responses.cloud;
+  }
 
-  return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+  if (containsAny(["website", "audit", "inspector"]) && startsWithQuestion()) {
+    return responses.website;
+  }
+
+  // Specific topic questions
+  if (lowerMessage.includes("why") &&
+      containsAny(["important", "matter", "significant"])) {
+    return responses.importance;
+  }
+
+  if (containsAny(["statistic", "stat", "number", "fact", "percentage"])) {
+    return responses.statistics;
+  }
+
+  if (containsAny(["future", "technology", "innovation"])) {
+    return responses.future;
+  }
+
+  // Conversational responses
+  if (containsAny(["hello", "hi", "hey", "greetings"])) {
+    return responses.greetings[Math.floor(Math.random() * responses.greetings.length)];
+  }
+
+  if (containsAny(["thank", "thanks", "appreciate"])) {
+    return responses.thanks[Math.floor(Math.random() * responses.thanks.length)];
+  }
+
+  if (containsAny(["bye", "goodbye", "see you"])) {
+    return responses.goodbye;
+  }
+
+  if (containsAny(["help", "what can you do", "assist"])) {
+    return responses.help;
+  }
+
+  // Fallback responses for unrecognized questions
+  return responses.fallbacks[Math.floor(Math.random() * responses.fallbacks.length)];
 }
 
 /**
@@ -545,12 +670,15 @@ function initGame() {
   initAudio();
 
   // Try to resume audio context immediately
-  if (audioContext && audioContext.state === 'suspended') {
-    audioContext.resume().then(() => {
-      console.log('Audio context resumed');
-    }).catch(err => {
-      console.warn('Failed to resume audio context:', err);
-    });
+  if (audioContext && audioContext.state === "suspended") {
+    audioContext
+      .resume()
+      .then(() => {
+        console.log("Audio context resumed");
+      })
+      .catch((err) => {
+        console.warn("Failed to resume audio context:", err);
+      });
   }
 
   const startBtn = document.getElementById("start-game-btn");
@@ -594,7 +722,7 @@ function initGame() {
   if (startBtn) {
     startBtn.addEventListener("click", async () => {
       // Ensure audio context is running (required for browsers)
-      if (audioContext && audioContext.state === 'suspended') {
+      if (audioContext && audioContext.state === "suspended") {
         await audioContext.resume();
       }
 
@@ -1078,16 +1206,16 @@ function startBackgroundMusic() {
     // Start the 1-minute looping background music
     backgroundMusic = createSimpleMusicLoop();
     isMusicPlaying = true;
-    console.log('Background music started successfully');
+    console.log("Background music started successfully");
   } catch (error) {
-    console.warn('Background music failed:', error.message);
+    console.warn("Background music failed:", error.message);
     // Fallback to even simpler music
     try {
       backgroundMusic = createBasicMusicLoop();
       isMusicPlaying = true;
-      console.log('Fallback music started');
+      console.log("Fallback music started");
     } catch (fallbackError) {
-      console.warn('Fallback music also failed:', fallbackError.message);
+      console.warn("Fallback music also failed:", fallbackError.message);
     }
   }
 }
@@ -1105,111 +1233,122 @@ function createSimpleMusicLoop() {
   const sections = [
     // Intro - 15 seconds
     {
-      name: 'intro',
+      name: "intro",
       duration: 15,
       pattern: [
         // Gentle opening
-        { note: 'C4', duration: 0.5, velocity: 0.03 },
-        { note: 'E4', duration: 0.5, velocity: 0.03 },
-        { note: 'G4', duration: 0.5, velocity: 0.025 },
-        { note: 'C5', duration: 1.0, velocity: 0.025 },
-        { note: 'G4', duration: 0.5, velocity: 0.03 },
-        { note: 'E4', duration: 0.5, velocity: 0.03 },
-        { note: 'C4', duration: 1.5, velocity: 0.025 },
+        { note: "C4", duration: 0.5, velocity: 0.03 },
+        { note: "E4", duration: 0.5, velocity: 0.03 },
+        { note: "G4", duration: 0.5, velocity: 0.025 },
+        { note: "C5", duration: 1.0, velocity: 0.025 },
+        { note: "G4", duration: 0.5, velocity: 0.03 },
+        { note: "E4", duration: 0.5, velocity: 0.03 },
+        { note: "C4", duration: 1.5, velocity: 0.025 },
         // Build up
-        { note: 'D4', duration: 0.4, velocity: 0.035 },
-        { note: 'F4', duration: 0.4, velocity: 0.035 },
-        { note: 'A4', duration: 0.6, velocity: 0.03 },
-        { note: 'D5', duration: 0.8, velocity: 0.03 },
-        { note: 'A4', duration: 0.4, velocity: 0.035 },
-        { note: 'F4', duration: 0.4, velocity: 0.035 },
-        { note: 'D4', duration: 1.2, velocity: 0.03 }
-      ]
+        { note: "D4", duration: 0.4, velocity: 0.035 },
+        { note: "F4", duration: 0.4, velocity: 0.035 },
+        { note: "A4", duration: 0.6, velocity: 0.03 },
+        { note: "D5", duration: 0.8, velocity: 0.03 },
+        { note: "A4", duration: 0.4, velocity: 0.035 },
+        { note: "F4", duration: 0.4, velocity: 0.035 },
+        { note: "D4", duration: 1.2, velocity: 0.03 },
+      ],
     },
     // Main theme - 20 seconds
     {
-      name: 'main',
+      name: "main",
       duration: 20,
       pattern: [
         // Catchy melody
-        { note: 'E4', duration: 0.3, velocity: 0.04 },
-        { note: 'G4', duration: 0.3, velocity: 0.04 },
-        { note: 'B4', duration: 0.4, velocity: 0.035 },
-        { note: 'E5', duration: 0.6, velocity: 0.035 },
-        { note: 'B4', duration: 0.3, velocity: 0.04 },
-        { note: 'G4', duration: 0.3, velocity: 0.04 },
-        { note: 'E4', duration: 0.8, velocity: 0.035 },
+        { note: "E4", duration: 0.3, velocity: 0.04 },
+        { note: "G4", duration: 0.3, velocity: 0.04 },
+        { note: "B4", duration: 0.4, velocity: 0.035 },
+        { note: "E5", duration: 0.6, velocity: 0.035 },
+        { note: "B4", duration: 0.3, velocity: 0.04 },
+        { note: "G4", duration: 0.3, velocity: 0.04 },
+        { note: "E4", duration: 0.8, velocity: 0.035 },
         // Variation
-        { note: 'F4', duration: 0.25, velocity: 0.045 },
-        { note: 'A4', duration: 0.25, velocity: 0.045 },
-        { note: 'C5', duration: 0.25, velocity: 0.04 },
-        { note: 'F5', duration: 0.5, velocity: 0.04 },
-        { note: 'C5', duration: 0.25, velocity: 0.045 },
-        { note: 'A4', duration: 0.25, velocity: 0.045 },
-        { note: 'F4', duration: 0.65, velocity: 0.04 },
+        { note: "F4", duration: 0.25, velocity: 0.045 },
+        { note: "A4", duration: 0.25, velocity: 0.045 },
+        { note: "C5", duration: 0.25, velocity: 0.04 },
+        { note: "F5", duration: 0.5, velocity: 0.04 },
+        { note: "C5", duration: 0.25, velocity: 0.045 },
+        { note: "A4", duration: 0.25, velocity: 0.045 },
+        { note: "F4", duration: 0.65, velocity: 0.04 },
         // Bridge
-        { note: 'G4', duration: 0.35, velocity: 0.04 },
-        { note: 'B4', duration: 0.35, velocity: 0.04 },
-        { note: 'D5', duration: 0.35, velocity: 0.035 },
-        { note: 'G5', duration: 0.7, velocity: 0.035 },
-        { note: 'D5', duration: 0.35, velocity: 0.04 },
-        { note: 'B4', duration: 0.35, velocity: 0.04 },
-        { note: 'G4', duration: 0.9, velocity: 0.035 }
-      ]
+        { note: "G4", duration: 0.35, velocity: 0.04 },
+        { note: "B4", duration: 0.35, velocity: 0.04 },
+        { note: "D5", duration: 0.35, velocity: 0.035 },
+        { note: "G5", duration: 0.7, velocity: 0.035 },
+        { note: "D5", duration: 0.35, velocity: 0.04 },
+        { note: "B4", duration: 0.35, velocity: 0.04 },
+        { note: "G4", duration: 0.9, velocity: 0.035 },
+      ],
     },
     // Build tension - 15 seconds
     {
-      name: 'build',
+      name: "build",
       duration: 15,
       pattern: [
         // Increasing intensity
-        { note: 'A4', duration: 0.2, velocity: 0.045 },
-        { note: 'C5', duration: 0.2, velocity: 0.045 },
-        { note: 'E5', duration: 0.3, velocity: 0.04 },
-        { note: 'A5', duration: 0.5, velocity: 0.04 },
-        { note: 'E5', duration: 0.2, velocity: 0.045 },
-        { note: 'C5', duration: 0.2, velocity: 0.045 },
-        { note: 'A4', duration: 0.6, velocity: 0.04 },
+        { note: "A4", duration: 0.2, velocity: 0.045 },
+        { note: "C5", duration: 0.2, velocity: 0.045 },
+        { note: "E5", duration: 0.3, velocity: 0.04 },
+        { note: "A5", duration: 0.5, velocity: 0.04 },
+        { note: "E5", duration: 0.2, velocity: 0.045 },
+        { note: "C5", duration: 0.2, velocity: 0.045 },
+        { note: "A4", duration: 0.6, velocity: 0.04 },
         // Faster rhythm
-        { note: 'B4', duration: 0.15, velocity: 0.05 },
-        { note: 'D5', duration: 0.15, velocity: 0.05 },
-        { note: 'F5', duration: 0.2, velocity: 0.045 },
-        { note: 'B5', duration: 0.4, velocity: 0.045 },
-        { note: 'F5', duration: 0.15, velocity: 0.05 },
-        { note: 'D5', duration: 0.15, velocity: 0.05 },
-        { note: 'B4', duration: 0.5, velocity: 0.045 }
-      ]
+        { note: "B4", duration: 0.15, velocity: 0.05 },
+        { note: "D5", duration: 0.15, velocity: 0.05 },
+        { note: "F5", duration: 0.2, velocity: 0.045 },
+        { note: "B5", duration: 0.4, velocity: 0.045 },
+        { note: "F5", duration: 0.15, velocity: 0.05 },
+        { note: "D5", duration: 0.15, velocity: 0.05 },
+        { note: "B4", duration: 0.5, velocity: 0.045 },
+      ],
     },
     // Climax & resolution - 10 seconds
     {
-      name: 'climax',
+      name: "climax",
       duration: 10,
       pattern: [
         // Powerful climax
-        { note: 'C5', duration: 0.1, velocity: 0.06 },
-        { note: 'E5', duration: 0.1, velocity: 0.06 },
-        { note: 'G5', duration: 0.15, velocity: 0.055 },
-        { note: 'C6', duration: 0.25, velocity: 0.055 },
-        { note: 'G5', duration: 0.1, velocity: 0.06 },
-        { note: 'E5', duration: 0.1, velocity: 0.06 },
-        { note: 'C5', duration: 0.29, velocity: 0.055 },
+        { note: "C5", duration: 0.1, velocity: 0.06 },
+        { note: "E5", duration: 0.1, velocity: 0.06 },
+        { note: "G5", duration: 0.15, velocity: 0.055 },
+        { note: "C6", duration: 0.25, velocity: 0.055 },
+        { note: "G5", duration: 0.1, velocity: 0.06 },
+        { note: "E5", duration: 0.1, velocity: 0.06 },
+        { note: "C5", duration: 0.29, velocity: 0.055 },
         // Resolution
-        { note: 'F4', duration: 0.3, velocity: 0.04 },
-        { note: 'A4', duration: 0.3, velocity: 0.04 },
-        { note: 'C5', duration: 0.4, velocity: 0.035 },
-        { note: 'F5', duration: 0.6, velocity: 0.035 },
-        { note: 'C5', duration: 0.3, velocity: 0.04 },
-        { note: 'A4', duration: 0.3, velocity: 0.04 },
-        { note: 'F4', duration: 0.8, velocity: 0.035 }
-      ]
-    }
+        { note: "F4", duration: 0.3, velocity: 0.04 },
+        { note: "A4", duration: 0.3, velocity: 0.04 },
+        { note: "C5", duration: 0.4, velocity: 0.035 },
+        { note: "F5", duration: 0.6, velocity: 0.035 },
+        { note: "C5", duration: 0.3, velocity: 0.04 },
+        { note: "A4", duration: 0.3, velocity: 0.04 },
+        { note: "F4", duration: 0.8, velocity: 0.035 },
+      ],
+    },
   ];
 
   const noteFreq = {
-    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
-    'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25,
-    'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99,
-    'A5': 880.00, 'B5': 987.77, 'C6': 1046.50
+    C4: 261.63,
+    D4: 293.66,
+    E4: 329.63,
+    F4: 349.23,
+    G4: 392.0,
+    A4: 440.0,
+    B4: 493.88,
+    C5: 523.25,
+    D5: 587.33,
+    E5: 659.25,
+    F5: 698.46,
+    G5: 783.99,
+    A5: 880.0,
+    B5: 987.77,
+    C6: 1046.5,
   };
 
   let loopCount = 0;
@@ -1235,8 +1374,11 @@ function createSimpleMusicLoop() {
       }
 
       const noteData = section.pattern[patternIndex];
-      const noteTime = sectionStartTime + section.pattern.slice(0, patternIndex)
-        .reduce((sum, note) => sum + note.duration, 0);
+      const noteTime =
+        sectionStartTime +
+        section.pattern
+          .slice(0, patternIndex)
+          .reduce((sum, note) => sum + note.duration, 0);
 
       // Create main melody oscillator
       const oscillator = audioContext.createOscillator();
@@ -1246,27 +1388,37 @@ function createSimpleMusicLoop() {
       gainNode.connect(audioContext.destination);
 
       oscillator.frequency.setValueAtTime(noteFreq[noteData.note], noteTime);
-      oscillator.type = 'square';
+      oscillator.type = "square";
 
       gainNode.gain.setValueAtTime(noteData.velocity, noteTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, noteTime + noteData.duration * 0.8);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        noteTime + noteData.duration * 0.8
+      );
 
       oscillator.start(noteTime);
       oscillator.stop(noteTime + noteData.duration);
 
       // Add subtle harmony for richness
-      if (patternIndex % 3 === 0) { // Every third note
+      if (patternIndex % 3 === 0) {
+        // Every third note
         const harmonyOsc = audioContext.createOscillator();
         const harmonyGain = audioContext.createGain();
 
         harmonyOsc.connect(harmonyGain);
         harmonyGain.connect(audioContext.destination);
 
-        harmonyOsc.frequency.setValueAtTime(noteFreq[noteData.note] * 1.25, noteTime);
-        harmonyOsc.type = 'sine';
+        harmonyOsc.frequency.setValueAtTime(
+          noteFreq[noteData.note] * 1.25,
+          noteTime
+        );
+        harmonyOsc.type = "sine";
 
         harmonyGain.gain.setValueAtTime(noteData.velocity * 0.15, noteTime);
-        harmonyGain.gain.exponentialRampToValueAtTime(0.001, noteTime + noteData.duration * 0.6);
+        harmonyGain.gain.exponentialRampToValueAtTime(
+          0.001,
+          noteTime + noteData.duration * 0.6
+        );
 
         harmonyOsc.start(noteTime);
         harmonyOsc.stop(noteTime + noteData.duration);
@@ -1286,24 +1438,27 @@ function createSimpleMusicLoop() {
   return {
     stop: () => {
       isMusicPlaying = false;
-    }
+    },
   };
 }
 
 function createBasicMusicLoop() {
   // Simple fallback melody if the complex one fails
   const melody = [
-    { note: 'C4', duration: 0.5 },
-    { note: 'E4', duration: 0.5 },
-    { note: 'G4', duration: 0.5 },
-    { note: 'C5', duration: 0.5 },
-    { note: 'G4', duration: 0.5 },
-    { note: 'E4', duration: 0.5 },
-    { note: 'C4', duration: 1.0 }
+    { note: "C4", duration: 0.5 },
+    { note: "E4", duration: 0.5 },
+    { note: "G4", duration: 0.5 },
+    { note: "C5", duration: 0.5 },
+    { note: "G4", duration: 0.5 },
+    { note: "E4", duration: 0.5 },
+    { note: "C4", duration: 1.0 },
   ];
 
   const noteFreq = {
-    'C4': 261.63, 'E4': 329.63, 'G4': 392.00, 'C5': 523.25
+    C4: 261.63,
+    E4: 329.63,
+    G4: 392.0,
+    C5: 523.25,
   };
 
   function playMelody() {
@@ -1311,7 +1466,7 @@ function createBasicMusicLoop() {
 
     let currentTime = audioContext.currentTime;
 
-    melody.forEach(noteData => {
+    melody.forEach((noteData) => {
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -1319,10 +1474,13 @@ function createBasicMusicLoop() {
       gainNode.connect(audioContext.destination);
 
       oscillator.frequency.setValueAtTime(noteFreq[noteData.note], currentTime);
-      oscillator.type = 'square';
+      oscillator.type = "square";
 
       gainNode.gain.setValueAtTime(0.03, currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + noteData.duration * 0.8);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        currentTime + noteData.duration * 0.8
+      );
 
       oscillator.start(currentTime);
       oscillator.stop(currentTime + noteData.duration);
@@ -1341,6 +1499,6 @@ function createBasicMusicLoop() {
   return {
     stop: () => {
       isMusicPlaying = false;
-    }
+    },
   };
 }

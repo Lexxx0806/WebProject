@@ -84,13 +84,104 @@
       </div>
     </div>
 
+
+
+    <!-- Ocean Scene for Light Theme -->
+    <div class="ocean-scene">
+      <div class="sun"></div>
+      <div class="clouds">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="birds"></div>
+      <div class="sea">
+        <div class="wave w-1"></div>
+        <div class="wave w-2"></div>
+        <div class="fish">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="grass">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="grass">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="grass">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="grass">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="circle">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="circle">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="circle">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="circle">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="grass_tw"></div>
+        <div class="grass_tw"></div>
+        <div class="grass_tw"></div>
+      </div>
+    </div>
+
     <main class="container">
       <section class="hero reveal active">
         <div class="hero-content">
           <h1>Lite.</h1>
+
+          <!-- Rotating Text Carousel -->
+          <section class="rotatingText">
+            <div class="rotatingText-content">
+              <h2 class="rotatingText-adjective">Lighten Your Digital Footprint</h2>
+              <h2 class="rotatingText-adjective">The Cloud Has Weight. Go Lite</h2>
+              <h2 class="rotatingText-adjective">Low Carbon. High Impact</h2>
+              <h2 class="rotatingText-adjective">Your Data, Decarbonized</h2>
+              <h2 class="rotatingText-adjective">Making the Invisible Impact Visible</h2>
+              <h2 class="rotatingText-adjective">Sustainable Habits for the Digital Age</h2>
+              <h2 class="rotatingText-adjective">Browse Better. Breathe Easier</h2>
+              <h2 class="rotatingText-adjective">Stream Smarter. Scroll Greener</h2>
+              <h2 class="rotatingText-adjective">Minimize Your Bytes, Maximize Our Future</h2>
+              <h2 class="rotatingText-adjective">Be a Heavy User with a Lite Impact</h2>
+            </div>
+          </section>
+
           <p class="hero-sub">
-            The internet emits 1.6 billion tons of greenhouse gases per year.
-            <br />It's time to shed the digital weight.
+            <span data-translate="heroSub"></span>
           </p>
           <div class="action-row">
             <a href="inspector.html" class="slice" style="width: auto">
@@ -439,65 +530,80 @@
       </section>
 
       <section class="reveal" style="margin-top: 60px">
-        <div class="grid">
-          <div class="card">
-            <h2>
-              <i class="fa-solid fa-robot accent"></i> AI Sustainability Assistant
-            </h2>
-            <p>
-              Have questions about digital emissions, carbon calculations, or
-              sustainable tech practices? Ask our AI assistant!
-            </p>
-            <div class="chatbot-container">
-              <div class="chatbot-interface">
-                <div class="chatbot-header">
-                  <i class="fa-solid fa-robot accent"></i>
-                  <span>Lite AI Assistant</span>
-                </div>
-                <div class="chatbot-messages" id="chatbot-messages">
-                  <div class="message bot">
-                    <strong>Lite AI:</strong> Hello! I'm your digital sustainability assistant. Ask me anything about carbon emissions, environmental impact, or how to reduce your digital footprint!
-                  </div>
-                </div>
-                <div class="chatbot-input">
-                  <input
-                    type="text"
-                    id="chatbot-input"
-                    placeholder="Ask about digital sustainability..."
-                    onkeypress="handleChatKeyPress(event)"
-                  />
-                  <button onclick="sendChatMessage()" class="chatbot-send">
-                    <i class="fa-solid fa-paper-plane"></i>
-                  </button>
-                </div>
-              </div>
+        <div class="card">
+          <h2>
+            <i class="fa-solid fa-question-circle accent"></i> Common Questions
+          </h2>
+          <div class="faq-list">
+            <div class="faq-item">
+              <strong>What counts as 'digital emissions'?</strong>
+              <p>Energy used by data centers, network infrastructure, and device manufacturing.</p>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">
-              AI-powered assistance for digital sustainability questions
-            </p>
-          </div>
-
-          <div class="card">
-            <h2>
-              <i class="fa-solid fa-question-circle accent"></i> Common Questions
-            </h2>
-            <div class="faq-list">
-              <div class="faq-item">
-                <strong>What counts as 'digital emissions'?</strong>
-                <p>Energy used by data centers, network infrastructure, and device manufacturing.</p>
-              </div>
-              <div class="faq-item">
-                <strong>How accurate are the calculations?</strong>
-                <p>Based on industry standards from Sustainable Web Design and environmental research.</p>
-              </div>
-              <div class="faq-item">
-                <strong>What can I do to reduce my footprint?</strong>
-                <p>Use dark mode, delete old files, choose green hosting, and reduce video quality.</p>
-              </div>
+            <div class="faq-item">
+              <strong>How accurate are the calculations?</strong>
+              <p>Based on industry standards from Sustainable Web Design and environmental research.</p>
+            </div>
+            <div class="faq-item">
+              <strong>What can I do to reduce my footprint?</strong>
+              <p>Use dark mode, delete old files, choose green hosting, and reduce video quality.</p>
             </div>
           </div>
         </div>
       </section>
+
+      <!-- Floating AI Chatbot Widget -->
+      <div id="chatbot-widget" class="chatbot-widget">
+        <div id="chatbot-toggle" class="chatbot-toggle">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="chatbot-container-widget">
+          <div class="chatbot-interface">
+            <div class="chatbot-header">
+              <i class="fa-solid fa-robot accent"></i>
+              <span>Lite AI Assistant</span>
+              <button id="chatbot-close" class="chatbot-close-btn">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+              <div class="message bot">
+                <strong>Lite AI:</strong> Hello! I'm your digital sustainability assistant. Ask me anything about carbon emissions, environmental impact, or how to reduce your digital footprint!
+              </div>
+            </div>
+            <div class="chatbot-quick-questions">
+              <button onclick="askQuickQuestion('What are digital carbon emissions?')" class="quick-question-btn">
+                What are digital emissions?
+              </button>
+              <button onclick="askQuickQuestion('How does the carbon calculator work?')" class="quick-question-btn">
+                How does calculator work?
+              </button>
+              <button onclick="askQuickQuestion('What can I do to reduce my digital footprint?')" class="quick-question-btn">
+                How to reduce emissions?
+              </button>
+              <button onclick="askQuickQuestion('Tell me about green hosting')" class="quick-question-btn">
+                What is green hosting?
+              </button>
+              <button onclick="askQuickQuestion('Why is digital sustainability important?')" class="quick-question-btn">
+                Why does it matter?
+              </button>
+              <button onclick="askQuickQuestion('How does dark mode save energy?')" class="quick-question-btn">
+                Dark mode benefits?
+              </button>
+            </div>
+            <div class="chatbot-input">
+              <input
+                type="text"
+                id="chatbot-input"
+                placeholder="Ask about digital sustainability..."
+                onkeypress="handleChatKeyPress(event)"
+              />
+              <button onclick="sendChatMessage()" class="chatbot-send">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="script.js"></script>
