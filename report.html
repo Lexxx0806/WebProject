@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Lite — Mission Report</title>
+    <title>Lite — Implementation Methodology</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap"
       rel="stylesheet"
@@ -125,18 +125,141 @@
 
     <div class="report-container reveal active">
       <a href="index.html" class="back-btn">← Return to Home Base</a>
-      <h1>Mission Report</h1>
-      <p class="lead">Technical analysis of the "Lite" initiative.</p>
-      <h3>1. The Problem</h3>
-      <p>
-        The infrastructure supporting the internet accounts for 3.7% of global
-        greenhouse emissions.
-      </p>
-      <h3>2. The Methodology</h3>
-      <p>
-        Our calculations utilize the
-        <strong>Sustainable Web Design</strong> model and Google PageSpeed API.
-      </p>
+      <h1>Implementation Methodology</h1>
+      <p class="lead">Technical architecture and development approach for the Lite digital sustainability platform.</p>
+
+      <h3>1. System Architecture</h3>
+      <p>The Lite platform implements a hybrid client-server architecture with progressive enhancement principles:</p>
+      <ul>
+        <li><strong>Frontend Layer:</strong> Vanilla HTML5/CSS3/JavaScript with modular component design</li>
+        <li><strong>Backend Layer:</strong> Node.js/Express.js server with RESTful API endpoints</li>
+        <li><strong>Integration Layer:</strong> External APIs for data enrichment (Green Web Foundation, PageSpeed)</li>
+        <li><strong>Persistence Layer:</strong> Browser localStorage for user preferences and game scores</li>
+      </ul>
+
+      <h3>2. Development Methodology</h3>
+      <p>Following agile development principles with iterative feature implementation:</p>
+      <ul>
+        <li><strong>Component-Based Architecture:</strong> Modular, reusable UI components with clear separation of concerns</li>
+        <li><strong>Progressive Enhancement:</strong> Core functionality works without JavaScript, enhanced with dynamic features</li>
+        <li><strong>Mobile-First Design:</strong> Responsive layouts built for mobile devices, enhanced for larger screens</li>
+        <li><strong>Accessibility-First:</strong> WCAG 2.1 AA compliance with semantic HTML and ARIA attributes</li>
+        <li><strong>Performance Optimization:</strong> Lazy loading, efficient animations, and optimized asset delivery</li>
+      </ul>
+
+      <h3>3. Technical Implementation</h3>
+
+      <h4>Frontend Technologies</h4>
+      <ul>
+        <li><strong>HTML5:</strong> Semantic markup with accessibility attributes and structured data</li>
+        <li><strong>CSS3:</strong> Custom properties (CSS variables), Flexbox/Grid layouts, CSS animations</li>
+        <li><strong>JavaScript (ES6+):</strong> Modular functions, async/await for API calls, DOM manipulation</li>
+        <li><strong>Three.js:</strong> WebGL-accelerated 3D graphics for interactive Earth visualization</li>
+        <li><strong>Font Awesome:</strong> Scalable vector icons with consistent visual language</li>
+      </ul>
+
+      <h4>Backend Technologies</h4>
+      <ul>
+        <li><strong>Node.js/Express.js:</strong> RESTful API server with middleware for security and CORS</li>
+        <li><strong>Puppeteer:</strong> Headless browser automation for website scanning and data extraction</li>
+        <li><strong>Axios:</strong> HTTP client for external API integration with error handling</li>
+        <li><strong>Rate Limiting:</strong> IP-based request throttling to prevent abuse</li>
+        <li><strong>Error Handling:</strong> Comprehensive try-catch blocks with graceful degradation</li>
+      </ul>
+
+      <h3>4. Carbon Calculation Methodology</h3>
+      <p>Following Sustainable Web Design principles with scientifically-backed emission factors:</p>
+
+      <h4>Calculation Formulas</h4>
+      <ul>
+        <li><strong>Cloud Storage:</strong> 0.2 kg CO₂ per GB annually (data center operations)</li>
+        <li><strong>Video Streaming:</strong> 0.055 kg CO₂ per hour (content delivery networks)</li>
+        <li><strong>Email Storage:</strong> 0.004 kg CO₂ per email (server storage and transmission)</li>
+        <li><strong>Website Emissions:</strong> Page size × Energy intensity × Carbon intensity</li>
+        <li><strong>Green Hosting:</strong> 50g CO₂/kWh vs Standard 442g CO₂/kWh (energy source)</li>
+      </ul>
+
+      <h4>Data Sources</h4>
+      <ul>
+        <li><strong>Sustainable Web Design Model:</strong> Wholegrain Digital research framework</li>
+        <li><strong>Green Web Foundation:</strong> Global database of eco-friendly hosting providers</li>
+        <li><strong>Google PageSpeed API:</strong> Real-time website performance and size metrics</li>
+        <li><strong>Environmental Research:</strong> Peer-reviewed studies on digital carbon emissions</li>
+      </ul>
+
+      <h3>5. User Experience Design</h3>
+
+      <h4>Interaction Patterns</h4>
+      <ul>
+        <li><strong>Progressive Disclosure:</strong> Information revealed gradually to avoid cognitive overload</li>
+        <li><strong>Immediate Feedback:</strong> Real-time calculations and visual responses</li>
+        <li><strong>Gamification:</strong> Interactive elements that educate through engagement</li>
+        <li><strong>Theme Consistency:</strong> Dark/light modes with animated backgrounds</li>
+        <li><strong>Cross-Device Compatibility:</strong> Touch-friendly interfaces on mobile devices</li>
+      </ul>
+
+      <h4>Visual Design System</h4>
+      <ul>
+        <li><strong>Color Palette:</strong> CSS custom properties for consistent theming</li>
+        <li><strong>Typography:</strong> Outfit font family with responsive scaling</li>
+        <li><strong>Animation Library:</strong> CSS keyframes for smooth, performant transitions</li>
+        <li><strong>Icon System:</strong> Font Awesome with semantic meaning and accessibility</li>
+        <li><strong>Layout Grid:</strong> Flexible grid system adapting to screen sizes</li>
+      </ul>
+
+      <h3>6. Security & Performance</h3>
+
+      <h4>Security Measures</h4>
+      <ul>
+        <li><strong>Input Validation:</strong> Client and server-side sanitization of user inputs</li>
+        <li><strong>CORS Configuration:</strong> Proper cross-origin resource sharing policies</li>
+        <li><strong>Rate Limiting:</strong> Protection against API abuse and server overload</li>
+        <li><strong>Error Handling:</strong> Secure error messages without information disclosure</li>
+        <li><strong>HTTPS Enforcement:</strong> Secure communication protocols</li>
+      </ul>
+
+      <h4>Performance Optimization</h4>
+      <ul>
+        <li><strong>Asset Optimization:</strong> Minified CSS/JS with efficient delivery</li>
+        <li><strong>Lazy Loading:</strong> Progressive loading of non-critical resources</li>
+        <li><strong>Caching Strategy:</strong> Browser caching for repeated visits</li>
+        <li><strong>Animation Performance:</strong> GPU-accelerated CSS transforms</li>
+        <li><strong>Bundle Optimization:</strong> Efficient loading with minimal HTTP requests</li>
+      </ul>
+
+      <h3>7. Testing & Quality Assurance</h3>
+      <ul>
+        <li><strong>Cross-Browser Testing:</strong> Compatibility across Chrome, Firefox, Safari, Edge</li>
+        <li><strong>Mobile Testing:</strong> Touch interactions and responsive layouts</li>
+        <li><strong>Accessibility Testing:</strong> Screen reader compatibility and keyboard navigation</li>
+        <li><strong>Performance Testing:</strong> Lighthouse scores and loading speed metrics</li>
+        <li><strong>API Reliability:</strong> Fallback systems for external service failures</li>
+        <li><strong>Error Boundary Testing:</strong> Graceful handling of edge cases</li>
+      </ul>
+
+      <h3>8. Deployment & Maintenance</h3>
+
+      <h4>Deployment Strategy</h4>
+      <ul>
+        <li><strong>Cloud Hosting:</strong> Scalable infrastructure with CDN for global performance</li>
+        <li><strong>CI/CD Pipeline:</strong> Automated testing and deployment workflows</li>
+        <li><strong>Monitoring:</strong> Real-time performance and error tracking</li>
+        <li><strong>Backup Systems:</strong> Regular data backups and disaster recovery</li>
+        <li><strong>Version Control:</strong> Git-based development with feature branching</li>
+      </ul>
+
+      <h4>Maintenance Procedures</h4>
+      <ul>
+        <li><strong>Security Updates:</strong> Regular dependency updates and vulnerability patches</li>
+        <li><strong>Performance Monitoring:</strong> Continuous optimization based on user metrics</li>
+        <li><strong>Content Updates:</strong> Regular refresh of educational materials and statistics</li>
+        <li><strong>API Maintenance:</strong> Monitoring and updating external service integrations</li>
+        <li><strong>User Feedback Integration:</strong> Continuous improvement based on user input</li>
+      </ul>
+
+      <h3>9. Methodology Summary</h3>
+      <p>The Lite platform's implementation methodology combines technical excellence with environmental consciousness. By integrating sustainable development practices throughout the entire software lifecycle—from architecture design and coding standards to deployment automation and continuous monitoring—we ensure that the platform not only educates users about digital carbon emissions but also minimizes its own environmental impact. This holistic approach demonstrates that modern web applications can be both technologically advanced and environmentally responsible.</p>
+
       <div style="margin-top: 50px; text-align: center">
         <a href="index.html" class="btn btn-primary">Launch Tools</a>
       </div>

@@ -422,11 +422,31 @@ function initCalculator() {
         email * 52 * 0.004
       ).toFixed(1);
 
-      // Trees needed to absorb this CO₂ annually
+      // Trees needed to absorb this CO₂ annually (21kg CO₂ per tree)
       const trees = Math.max(1, Math.ceil(total / 21));
+
+      // Miles driven by average car (404g CO₂ per mile)
+      const carMiles = Math.max(1, Math.floor(total / 0.404));
+
+      // Hours of commercial flight time (90g CO₂ per passenger per hour)
+      const flightHours = Math.max(1, Math.floor(total / 0.09));
+
+      // Smartphone full charges (8.3g CO₂ per charge)
+      const phoneCharges = Math.max(1, Math.floor(total / 0.0083));
+
+      // Days of electricity for average US home (29.3kg CO₂ per day)
+      const homeDays = Math.max(1, Math.floor(total / 29.3));
+
+      // Beef meals (60g CO₂ per 100g beef = ~27kg CO₂ per meal)
+      const meatMeals = Math.max(1, Math.floor(total / 27));
 
       totalEl.textContent = total;
       treeEl.textContent = trees;
+      document.getElementById('car-miles').textContent = carMiles.toLocaleString();
+      document.getElementById('flight-hours').textContent = flightHours.toLocaleString();
+      document.getElementById('phone-charges').textContent = phoneCharges.toLocaleString();
+      document.getElementById('home-days').textContent = homeDays.toLocaleString();
+      document.getElementById('meat-meals').textContent = meatMeals.toLocaleString();
       resultBox.style.display = "block";
       resultBox.scrollIntoView({ behavior: "smooth" });
     });
@@ -458,6 +478,37 @@ function initInspector() {
     const co2 = (energy * carbonFactor).toFixed(3);
     document.getElementById("carbon-per-visit").textContent = co2 + " g";
 
+    // Calculate equivalent impacts for website
+    const co2Grams = parseFloat(co2);
+    const annualVisits = 10000; // Estimated annual visits for average website
+    const annualCO2 = co2Grams * annualVisits / 1000; // Convert to kg
+
+    // Trees needed (21kg CO₂ per tree per year)
+    const trees = Math.max(1, Math.ceil(annualCO2 / 21));
+
+    // Miles driven by average car (404g CO₂ per mile)
+    const carMiles = Math.max(1, Math.floor(annualCO2 / 0.404));
+
+    // Hours of commercial flight time (90g CO₂ per passenger per hour)
+    const flightHours = Math.max(1, Math.floor(annualCO2 / 0.09));
+
+    // Smartphone full charges (8.3g CO₂ per charge)
+    const phoneCharges = Math.max(1, Math.floor(annualCO2 / 0.0083));
+
+    // Days of electricity for average US home (29.3kg CO₂ per day)
+    const homeDays = Math.max(1, Math.floor(annualCO2 / 29.3));
+
+    // User visits needed to equal one person's annual digital footprint (assuming 1200kg average)
+    const userVisits = Math.max(1, Math.floor(1200 / (annualCO2 / annualVisits) * 1000));
+
+    // Update visualizations
+    document.getElementById("site-trees").textContent = trees.toLocaleString();
+    document.getElementById("site-car-miles").textContent = carMiles.toLocaleString();
+    document.getElementById("site-flight-hours").textContent = flightHours.toLocaleString();
+    document.getElementById("site-phone-charges").textContent = phoneCharges.toLocaleString();
+    document.getElementById("site-home-days").textContent = homeDays.toLocaleString();
+    document.getElementById("site-user-visits").textContent = userVisits.toLocaleString();
+
     const ratingEl = document.getElementById("site-rating");
     ratingEl.className = "res-card";
     if (co2 < 0.095) {
@@ -468,7 +519,7 @@ function initInspector() {
       ratingEl.classList.add("rating-good");
     } else if (co2 < 0.341) {
       ratingEl.textContent = "B";
-      ratingEl.style.color = "var(--accent)";
+      ratingEl.classList.add("rating-good");
     } else if (co2 < 0.493) {
       ratingEl.textContent = "C";
       ratingEl.style.color = "#fbbf24";
@@ -658,6 +709,13 @@ function initInspector() {
 
       updateCalculation();
       results.style.display = "block";
+
+      // Show impact visualizations
+      const impactViz = document.getElementById("impact-visualizations");
+      if (impactViz) {
+        impactViz.style.display = "grid";
+      }
+
       checkBtn.textContent = "Run Audit";
       checkBtn.disabled = false;
     });
