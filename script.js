@@ -37,21 +37,66 @@ function setupGlobalUI() {
   // Menu
   const menuToggle = document.getElementById("menu-toggle");
   const menuOverlay = document.getElementById("menu-overlay");
-  const menuClose = document.getElementById("menu-close");
 
   if (menuToggle && menuOverlay) {
     menuToggle.addEventListener("click", () => {
-      menuOverlay.classList.add("active");
-      menuToggle.style.opacity = 0;
+      // Toggle menu state
+      const isActive = menuOverlay.classList.contains("active");
+      if (isActive) {
+        menuOverlay.classList.remove("active");
+        // Don't hide the button completely, just change its appearance
+        menuToggle.classList.remove("menu-open");
+      } else {
+        menuOverlay.classList.add("active");
+        menuToggle.classList.add("menu-open");
+      }
     });
     const closeFn = () => {
       menuOverlay.classList.remove("active");
-      menuToggle.style.opacity = 1;
+      menuToggle.classList.remove("menu-open");
     };
-    menuClose.addEventListener("click", closeFn);
     document
       .querySelectorAll(".menu-link")
       .forEach((l) => l.addEventListener("click", closeFn));
+  }
+
+  // Settings Panel
+  const settingsToggle = document.getElementById("settings-toggle");
+  const settingsPanel = document.getElementById("settings-panel");
+  const settingsClose = document.getElementById("settings-close");
+
+  if (settingsToggle && settingsPanel) {
+    settingsToggle.addEventListener("click", () => {
+      // Toggle settings panel
+      const isActive = settingsPanel.classList.contains("active");
+      if (isActive) {
+        settingsPanel.classList.remove("active");
+        settingsToggle.classList.remove("settings-open");
+      } else {
+        settingsPanel.classList.add("active");
+        settingsToggle.classList.add("settings-open");
+        // Close menu if it's open
+        if (menuOverlay.classList.contains("active")) {
+          menuOverlay.classList.remove("active");
+          menuToggle.classList.remove("menu-open");
+        }
+      }
+    });
+
+    if (settingsClose) {
+      settingsClose.addEventListener("click", () => {
+        settingsPanel.classList.remove("active");
+        settingsToggle.classList.remove("settings-open");
+      });
+    }
+
+    // Close settings when clicking outside
+    settingsPanel.addEventListener("click", (e) => {
+      if (e.target === settingsPanel) {
+        settingsPanel.classList.remove("active");
+        settingsToggle.classList.remove("settings-open");
+      }
+    });
   }
 
   // Cursor
@@ -128,6 +173,100 @@ function selectMission(value, displayText) {
   window.selectedMission = value;
   document.getElementById("mission-selected").textContent = displayText;
   document.getElementById("mission-toggle").checked = false;
+}
+
+// Chatbot functionality
+function handleChatKeyPress(event) {
+  if (event.key === 'Enter') {
+    sendChatMessage();
+  }
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatbot-input');
+  const messages = document.getElementById('chatbot-messages');
+  const message = input.value.trim();
+
+  if (!message) return;
+
+  // Add user message
+  messages.innerHTML += `<div class="message user"><strong>You:</strong> ${message}</div>`;
+  input.value = '';
+
+  // Scroll to bottom
+  messages.scrollTop = messages.scrollHeight;
+
+  // Add typing indicator
+  messages.innerHTML += `<div class="message bot typing"><strong>Lite AI:</strong> <span class="typing-dots">...</span></div>`;
+
+  // Simulate AI response (in a real app, this would call an API)
+  setTimeout(() => {
+    // Remove typing indicator
+    const typingEl = document.querySelector('.typing');
+    if (typingEl) typingEl.remove();
+
+    // Generate response based on message content
+    const response = generateChatResponse(message);
+
+    // Add bot response
+    messages.innerHTML += `<div class="message bot"><strong>Lite AI:</strong> ${response}</div>`;
+
+    // Scroll to bottom
+    messages.scrollTop = messages.scrollHeight;
+  }, 1000 + Math.random() * 2000); // Random delay for realism
+}
+
+function generateChatResponse(message) {
+  const lowerMessage = message.toLowerCase();
+
+  // Simple keyword-based responses (in a real app, this would use AI)
+  if (lowerMessage.includes('carbon') || lowerMessage.includes('co2') || lowerMessage.includes('emissions')) {
+    return "Digital carbon emissions come from data centers, network infrastructure, and device manufacturing. The internet accounts for about 3.7% of global greenhouse gas emissions - that's comparable to the aviation industry!";
+  }
+
+  if (lowerMessage.includes('calculator') || lowerMessage.includes('calculate')) {
+    return "Our carbon calculator uses industry-standard formulas from Sustainable Web Design. It estimates your annual digital footprint based on cloud storage, streaming, and email usage. The results show both CO₂ emissions and equivalent tree absorption requirements.";
+  }
+
+  if (lowerMessage.includes('dark mode') || lowerMessage.includes('energy')) {
+    return "Dark mode can save significant energy on OLED screens! Studies show it can reduce power consumption by up to 60% on certain devices. It's one of the simplest ways to reduce your digital carbon footprint.";
+  }
+
+  if (lowerMessage.includes('hosting') || lowerMessage.includes('green')) {
+    return "Green hosting providers power their servers with 100% renewable energy. They typically use about 50g CO₂ per kWh compared to 442g for coal-powered hosting. Our web inspector can help you check if a site uses green hosting!";
+  }
+
+  if (lowerMessage.includes('game') || lowerMessage.includes('simulation')) {
+    return "The Data Stream Defense game teaches about digital waste through gameplay. Each 'data item' represents files that consume server energy. The higher your temperature goes, the more energy is being wasted - just like in real data centers!";
+  }
+
+  if (lowerMessage.includes('email') || lowerMessage.includes('gmail')) {
+    return "Email storage is a major contributor to digital emissions. Gmail alone stores over 1.5 petabytes of data! Our Inbox Hunter tool helps you find and delete old emails, newsletters, and large attachments to reduce your footprint.";
+  }
+
+  if (lowerMessage.includes('video') || lowerMessage.includes('streaming')) {
+    return "Video streaming is one of the largest sources of digital emissions. 480p video uses about 60% less data than 4K, and choosing lower quality can significantly reduce your carbon footprint while still enjoying content.";
+
+  }
+
+  if (lowerMessage.includes('cloud') || lowerMessage.includes('storage')) {
+    return "Cloud storage might seem 'invisible' but it consumes massive amounts of energy. 90% of created data is never accessed again, yet it still requires power for storage and backup systems. Regular cleanup is essential!";
+  }
+
+  if (lowerMessage.includes('website') || lowerMessage.includes('audit')) {
+    return "Our web inspector analyzes websites for environmental impact. It checks page size, hosting provider (green vs fossil fuel), and provides an eco-grade. Smaller, efficiently-hosted sites have much lower carbon footprints!";
+  }
+
+  // Default responses for general questions
+  const generalResponses = [
+    "That's a great question about digital sustainability! The internet's environmental impact is often overlooked, but it accounts for about 3.7% of global emissions - more than the entire aviation industry.",
+    "Digital emissions come from data centers (servers), network infrastructure (cables, routers), and device manufacturing. Every email, video, or website visit has a carbon cost.",
+    "Small actions add up! Using dark mode, deleting old files, choosing green hosting, and reducing video quality are all simple ways to reduce your digital carbon footprint.",
+    "Our calculator estimates your annual digital emissions based on your cloud storage, streaming habits, and email usage. It's based on industry research from organizations like the Green Web Foundation.",
+    "The Data Stream Defense game illustrates how digital waste accumulates. Each falling item represents data that consumes server energy - the temperature shows how 'hot' your digital footprint is getting!"
+  ];
+
+  return generalResponses[Math.floor(Math.random() * generalResponses.length)];
 }
 
 /**

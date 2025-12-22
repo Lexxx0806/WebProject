@@ -21,10 +21,14 @@
     <div id="cursor"></div>
 
     <div class="menu-wrapper">
-      <label class="switch" for="theme-toggle">
-        <input type="checkbox" id="theme-toggle" />
-        <span class="slider"></span>
-      </label>
+      <button
+        id="settings-toggle"
+        class="settings-orb"
+        aria-label="Open settings"
+        style="margin-right: 15px;"
+      >
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+      </button>
       <button
         id="menu-toggle"
         class="menu-orb"
@@ -34,11 +38,30 @@
       </button>
     </div>
 
-    <div id="menu-overlay" class="overlay">
-      <div class="overlay-content">
-        <button id="menu-close" class="close-btn">
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel">
+      <div class="settings-header">
+        <h3>Settings</h3>
+        <button id="settings-close" class="settings-close" aria-label="Close settings">
           <i class="fa-solid fa-xmark"></i>
         </button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-item">
+          <label for="theme-toggle" class="setting-label">
+            <i class="fa-solid fa-moon"></i>
+            Theme
+          </label>
+          <label class="switch" for="theme-toggle">
+            <input type="checkbox" id="theme-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div id="menu-overlay" class="overlay">
+      <div class="overlay-content">
         <div class="overlay-grid">
           <div class="nav-links">
             <h3>Select Module</h3>
@@ -419,6 +442,67 @@
           Join millions of users making the internet more sustainable, one click
           at a time.
         </p>
+      </section>
+
+      <section class="reveal" style="margin-top: 60px">
+        <div class="grid">
+          <div class="card">
+            <h2>
+              <i class="fa-solid fa-robot accent"></i> AI Sustainability Assistant
+            </h2>
+            <p>
+              Have questions about digital emissions, carbon calculations, or
+              sustainable tech practices? Ask our AI assistant!
+            </p>
+            <div class="chatbot-container">
+              <div class="chatbot-interface">
+                <div class="chatbot-header">
+                  <i class="fa-solid fa-robot accent"></i>
+                  <span>Lite AI Assistant</span>
+                </div>
+                <div class="chatbot-messages" id="chatbot-messages">
+                  <div class="message bot">
+                    <strong>Lite AI:</strong> Hello! I'm your digital sustainability assistant. Ask me anything about carbon emissions, environmental impact, or how to reduce your digital footprint!
+                  </div>
+                </div>
+                <div class="chatbot-input">
+                  <input
+                    type="text"
+                    id="chatbot-input"
+                    placeholder="Ask about digital sustainability..."
+                    onkeypress="handleChatKeyPress(event)"
+                  />
+                  <button onclick="sendChatMessage()" class="chatbot-send">
+                    <i class="fa-solid fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">
+              AI-powered assistance for digital sustainability questions
+            </p>
+          </div>
+
+          <div class="card">
+            <h2>
+              <i class="fa-solid fa-question-circle accent"></i> Common Questions
+            </h2>
+            <div class="faq-list">
+              <div class="faq-item">
+                <strong>What counts as 'digital emissions'?</strong>
+                <p>Energy used by data centers, network infrastructure, and device manufacturing.</p>
+              </div>
+              <div class="faq-item">
+                <strong>How accurate are the calculations?</strong>
+                <p>Based on industry standards from Sustainable Web Design and environmental research.</p>
+              </div>
+              <div class="faq-item">
+                <strong>What can I do to reduce my footprint?</strong>
+                <p>Use dark mode, delete old files, choose green hosting, and reduce video quality.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
