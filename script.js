@@ -63,7 +63,6 @@ function setupGlobalUI() {
   // Settings Panel
   const settingsToggle = document.getElementById("settings-toggle");
   const settingsPanel = document.getElementById("settings-panel");
-  const settingsClose = document.getElementById("settings-close");
 
   if (settingsToggle && settingsPanel) {
     settingsToggle.addEventListener("click", () => {
@@ -83,13 +82,6 @@ function setupGlobalUI() {
       }
     });
 
-    if (settingsClose) {
-      settingsClose.addEventListener("click", () => {
-        settingsPanel.classList.remove("active");
-        settingsToggle.classList.remove("settings-open");
-      });
-    }
-
     // Close settings when clicking outside
     settingsPanel.addEventListener("click", (e) => {
       if (e.target === settingsPanel) {
@@ -99,23 +91,11 @@ function setupGlobalUI() {
     });
   }
 
-  // Cursor
-  const cursor = document.getElementById("cursor");
-  document.addEventListener("mousemove", (e) => {
-    cursor.style.left = e.clientX + "px";
-    cursor.style.top = e.clientY + "px";
-  });
-  document.querySelectorAll("a, button").forEach((el) => {
-    el.addEventListener("mouseenter", () =>
-      document.body.classList.add("hovering")
-    );
-    el.addEventListener("mouseleave", () =>
-      document.body.classList.remove("hovering")
-    );
-  });
+  // Custom cursor disabled - using default browser cursor for better compatibility
+  // This prevents conflicts with menu overlays and ensures smooth interaction
 
   // Scroll Reveal
-  const observer = new IntersectionObserver(
+  const scrollObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -126,7 +106,7 @@ function setupGlobalUI() {
     },
     { threshold: 0.1 }
   );
-  document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+  document.querySelectorAll(".reveal").forEach((el) => scrollObserver.observe(el));
 }
 
 /* --- 2. INBOX HUNTER --- */
@@ -683,7 +663,7 @@ function initGame() {
           if (!gameActive) return;
           clearInterval(fallTimer);
           item.classList.add("popped");
-t
+
           // Create particle explosion effect
           createParticleExplosion(
             item.offsetLeft + item.offsetWidth / 2,
@@ -702,6 +682,7 @@ t
           }, 200);
         });
       }
+
       function endGame() {
         gameActive = false;
         clearTimeout(gameInterval);

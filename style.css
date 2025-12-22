@@ -39,7 +39,7 @@ body {
   color: var(--text);
   font-family: "Outfit", sans-serif;
   line-height: 1.6;
-  cursor: none;
+  cursor: auto !important;
   transition: background 0.3s, color 0.3s;
 }
 
@@ -480,79 +480,37 @@ select:focus {
   pointer-events: none;
 }
 .menu-orb {
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background: var(--card-bg);
   border: 2px solid var(--accent);
   color: var(--accent);
   cursor: pointer;
-  pointer-events: auto;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
-  overflow: hidden;
-}
-
-.menu-orb::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(34, 211, 238, 0.2),
-    transparent
-  );
-  transition: left 0.6s ease;
-}
-
-.menu-orb:hover::before,
-.menu-orb:focus::before,
-.menu-orb:active::before {
-  left: 100%;
+  pointer-events: auto;
 }
 
 .menu-orb:hover {
   background: var(--accent);
   color: white;
-  border-color: var(--accent);
-  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.3);
-  transform: translateY(-2px);
-}
-
-.menu-orb:focus {
-  background: linear-gradient(135deg, var(--accent), #0891b2);
-  color: white;
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.6);
-  outline: none;
-}
-
-.menu-orb i {
-  transition: all 0.3s ease;
-  font-size: 1.2rem;
-}
-
-.menu-orb:hover i,
-.menu-orb:focus i {
-  transform: scale(1.2) rotate(180deg);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
 }
 
 .menu-orb.menu-open {
   background: var(--accent);
   color: white;
-  border-color: var(--accent);
+  transform: rotate(180deg);
 }
 
-.menu-orb.menu-open i {
-  transform: rotate(90deg);
+.menu-orb i {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
 }
 /* Theme Toggle Switch - From Uiverse.io by alexruix */
 .switch {
@@ -1728,23 +1686,7 @@ footer {
   font-weight: 600;
 }
 
-.settings-close {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-}
 
-.settings-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
 
 .settings-content {
   padding: 20px;

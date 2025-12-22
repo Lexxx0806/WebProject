@@ -19,10 +19,14 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="menu-wrapper">
-      <label class="switch" for="theme-toggle">
-        <input type="checkbox" id="theme-toggle" />
-        <span class="slider"></span>
-      </label>
+      <button
+        id="settings-toggle"
+        class="settings-orb"
+        aria-label="Open settings"
+        style="margin-right: 15px;"
+      >
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+      </button>
       <button
         id="menu-toggle"
         class="menu-orb"
@@ -30,6 +34,22 @@
       >
         <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
       </button>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel">
+      <div class="settings-content">
+        <div class="setting-item">
+          <label for="theme-toggle" class="setting-label">
+            <i class="fa-solid fa-moon"></i>
+            Theme
+          </label>
+          <label class="switch" for="theme-toggle">
+            <input type="checkbox" id="theme-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <div id="menu-overlay" class="overlay">
